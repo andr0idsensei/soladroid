@@ -6,10 +6,19 @@ package com.androidsensei.soladroid.utils.trello;
  * Created by mihai on 5/16/15.
  */
 public final class TrelloConstants {
+    /**
+     * The generated Trello application key.
+     */
     public static final String TRELLO_APP_KEY = "3022828b12fa421bed09c6f3fa69cf8c";
 
+    /**
+     * The generated Trello application secret.
+     */
     public static final String TRELLO_APP_SECRET = "f6e52e15ac29a716d9be8c758d5aac7d6ecdc92599d7851958ba8c34fcaeda41";
 
+    /**
+     * The application name we want to be identified by with Trello.
+     */
     public static final String TRELLO_APP_NAME = "SolaDroid";
 
     /**
