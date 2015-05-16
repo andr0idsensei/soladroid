@@ -1,0 +1,19 @@
+package com.androidsensei.soladroid.utils.trello;
+
+/**
+ * Class to contain Trello specific constants such as app key, secret, API URLs if needed.
+ *
+ * Created by mihai on 5/16/15.
+ */
+public final class TrelloConstants {
+    public static final String TRELLO_APP_KEY = "3022828b12fa421bed09c6f3fa69cf8c";
+
+    public static final String TRELLO_APP_SECRET = "f6e52e15ac29a716d9be8c758d5aac7d6ecdc92599d7851958ba8c34fcaeda41";
+
+    public static final String TRELLO_APP_NAME = "SolaDroid";
+
+    /**
+     * Private constructor because we don't want an instance of this class.
+     */
+    private TrelloConstants() {}
+}
