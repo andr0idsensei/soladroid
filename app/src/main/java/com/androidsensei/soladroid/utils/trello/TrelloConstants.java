@@ -17,6 +17,7 @@ public final class TrelloConstants {
     public static final String TRELLO_APP_SECRET = "f6e52e15ac29a716d9be8c758d5aac7d6ecdc92599d7851958ba8c34fcaeda41";
 
     /**
+     *
      * The application name we want to be identified by with Trello.
      */
     public static final String TRELLO_APP_NAME = "SolaDroid";

@@ -2,8 +2,13 @@ package com.androidsensei.soladroid;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
+import com.androidsensei.soladroid.setup.ui.TrelloWebViewClient;
 
 
 public class SolaDroidActivity extends ActionBarActivity {
@@ -11,7 +16,13 @@ public class SolaDroidActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sola_droid);
+        WebView trelloAuth = new WebView(this);
+        //R.layout.activity_sola_droid
+        setContentView(trelloAuth);
+        WebSettings webSettings = trelloAuth.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        trelloAuth.setWebViewClient(new TrelloWebViewClient());
+        trelloAuth.loadUrl("https://trello.com/1/authorize?key=3022828b12fa421bed09c6f3fa69cf8c&name=SolaDroid&expiration=1day&response_type=token&scope=read,write");
     }
 
     @Override
