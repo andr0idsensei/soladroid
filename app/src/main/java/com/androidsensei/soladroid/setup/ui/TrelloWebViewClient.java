@@ -22,34 +22,47 @@ import rx.schedulers.Schedulers;
  */
 public class TrelloWebViewClient extends WebViewClient {
     @Override
-    public void onPageFinished(WebView view, String url) {
+    public void onPageFinished(WebView view, final String url) {
         super.onPageFinished(view, url);
-        Log.d("r1k0", "page finished url: " + url);
-        Log.d("r1k0", "page finished content: " + view.getContentDescription());
     }
 
     @Override
     public void onPageStarted(WebView view, final String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
         Log.d("r1k0", "page started url: " + url);
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-            Observable.create(new Observable.OnSubscribe<Response>() {
-                @Override
-                public void call(Subscriber<? super Response> subscriber) {
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .build();
-                    try {
-                        Response response = okHttpClient.newCall(request).execute();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        Observable.create(new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+                try {
+                    Response response = okHttpClient.newCall(request).execute();
+                    subscriber.onNext(response);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Response>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Response response) {
+                try {
+                    Log.d("r1k0", "response body from page started: " + response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
