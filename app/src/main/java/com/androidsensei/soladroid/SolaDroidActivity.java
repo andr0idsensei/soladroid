@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.androidsensei.soladroid.setup.ui.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.ui.TrelloWebViewClient;
 
 
@@ -21,6 +22,7 @@ public class SolaDroidActivity extends ActionBarActivity {
         setContentView(trelloAuth);
         WebSettings webSettings = trelloAuth.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        trelloAuth.addJavascriptInterface(new TrelloAuthJSInterface(this), "html_viewer");
         trelloAuth.setWebViewClient(new TrelloWebViewClient());
         trelloAuth.loadUrl("https://trello.com/1/authorize?key=3022828b12fa421bed09c6f3fa69cf8c&name=SolaDroid&expiration=1day&response_type=token&scope=read,write");
     }
