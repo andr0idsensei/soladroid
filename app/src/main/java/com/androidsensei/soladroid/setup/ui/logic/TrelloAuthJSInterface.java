@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid.setup.logic;
+package com.androidsensei.soladroid.setup.ui.logic;
 
 import android.content.Context;
 import android.os.Handler;

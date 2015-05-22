@@ -8,8 +8,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.setup.logic.TrelloAuthJSInterface;
-import com.androidsensei.soladroid.setup.logic.TrelloWebViewClient;
+import com.androidsensei.soladroid.setup.ui.logic.TrelloAuthJSInterface;
+import com.androidsensei.soladroid.setup.ui.logic.TrelloWebViewClient;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
