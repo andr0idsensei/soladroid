@@ -1,8 +1,6 @@
 package com.androidsensei.soladroid.setup.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +8,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.SolaDroidFragmentContract;
 import com.androidsensei.soladroid.setup.logic.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.logic.TrelloWebViewClient;
+import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
 /**
@@ -23,8 +21,7 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  *
  * @author mihai
  */
-public class TrelloAuthFragment extends Fragment {
-    private SolaDroidFragmentContract contract;
+public class TrelloAuthFragment extends SolaDroidBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,16 +33,6 @@ public class TrelloAuthFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupWebView((WebView) getView().findViewById(R.id.trello_auth_web_view));
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof SolaDroidFragmentContract) {
-            contract = (SolaDroidFragmentContract) activity;
-        } else {
-            throw new IllegalArgumentException("The activity containing this fragment should implement SolaDroidFragmentContract.");
-        }
     }
 
     /**

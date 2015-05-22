@@ -2,11 +2,12 @@ package com.androidsensei.soladroid;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
+import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
 
 public class SolaDroidActivity extends Activity implements SolaDroidFragmentContract {
 
@@ -27,7 +28,11 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
 
     @Override
     public void showSetupFragment() {
-        Log.d("r1k0", "showSetupFragment...");
+        //TODO create a generic method for replacing fragments
+        if (findViewById(R.id.fragment_container) != null) {
+            TrelloSetupFragment setupFragment = new TrelloSetupFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, setupFragment).commit();
+        }
     }
 
     @Override
@@ -37,7 +42,10 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
 
     @Override
     public void showAccessDeniedFragment() {
-        Log.d("r1k0", "showAccessDeniedFragment...");
+        if (findViewById(R.id.fragment_container) != null) {
+            TrelloAccessDeniedFragment accessDeniedFragment = new TrelloAccessDeniedFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, accessDeniedFragment).commit();
+        }
     }
 
     @Override
@@ -55,9 +63,9 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
