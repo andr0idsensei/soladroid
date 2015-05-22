@@ -11,6 +11,9 @@ import com.androidsensei.soladroid.SolaDroidFragmentContract;
  * Created by mihai on 5/22/15.
  */
 public abstract class SolaDroidBaseFragment extends Fragment {
+    /**
+     * The reference to the SolaDroidFragmentContract interface implementation.
+     */
     protected SolaDroidFragmentContract contract;
 
     @Override

@@ -13,32 +13,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * This JSInterface allows us to hook into the Trello authorization process in order to read the authorization token
+ * from the html response returned when the user grants access to SolaDroid.
+ * <p/>
  * Created by mihai on 5/20/15.
  */
 public class TrelloAuthJSInterface {
+    /**
+     * The Android context in which this implementation resides.
+     */
     private Context context;
-    private Handler jsHandler;
 
     public TrelloAuthJSInterface(Context context) {
         this.context = context;
-        jsHandler = new Handler();
     }
 
     @JavascriptInterface
     public void processHtml(final String html) {
-        jsHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("r1k0", "print html: " + html);
-                Pattern pattern = Pattern.compile("<pre>(.|\\n)*?<\\/pre>");
-                Matcher matcher = pattern.matcher(html);
-                matcher.find();
-                String rawToken = matcher.group();
-                String token = rawToken.replaceAll("<[^>]*>", "").trim();
-                SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_AUTH_TOKEN_KEY, token, context);
-                ((SolaDroidFragmentContract) context).showSetupFragment();
-                Log.d("r1k0", "the token: " + token);
-            }
-        });
+        Log.d("r1k0", "print html: " + html);
+        Pattern pattern = Pattern.compile("<pre>(.|\\n)*?<\\/pre>");
+        Matcher matcher = pattern.matcher(html);
+        matcher.find();
+        String rawToken = matcher.group();
+        String token = rawToken.replaceAll("<[^>]*>", "").trim();
+        SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_AUTH_TOKEN_KEY, token, context);
+        ((SolaDroidFragmentContract) context).showSetupFragment();
+        Log.d("r1k0", "the token: " + token);
     }
 }

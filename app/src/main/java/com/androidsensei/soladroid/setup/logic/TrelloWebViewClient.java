@@ -8,9 +8,14 @@ import android.webkit.WebViewClient;
 import com.androidsensei.soladroid.SolaDroidFragmentContract;
 
 /**
+ * Web view client implementation which helps us hook into the Trello authorization process.
+ *
  * Created by mihai on 5/16/15.
  */
 public class TrelloWebViewClient extends WebViewClient {
+    /**
+     * Reference to the fragment contract in order to be able to control the flow of the authorization action.
+     */
     private SolaDroidFragmentContract contract;
 
     public TrelloWebViewClient(SolaDroidFragmentContract contract) {

@@ -10,6 +10,8 @@ import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
+ * This fragment will be displayed to the user when she denies access to her Trello account.
+ *
  * Created by mihai on 5/22/15.
  */
 public class TrelloAccessDeniedFragment extends SolaDroidBaseFragment {

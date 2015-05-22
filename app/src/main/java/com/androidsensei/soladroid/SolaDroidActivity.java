@@ -8,7 +8,14 @@ import android.view.MenuItem;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
+import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
+/**
+ * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
+ * the users.
+ *
+ * @author mihai
+ */
 public class SolaDroidActivity extends Activity implements SolaDroidFragmentContract {
 
     @Override
@@ -20,19 +27,12 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
 
     @Override
     public void showAuthFragment() {
-        if (findViewById(R.id.fragment_container) != null) {
-            TrelloAuthFragment authFragment = new TrelloAuthFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, authFragment).commit();
-        }
+        replaceCurrentFragment(new TrelloAuthFragment());
     }
 
     @Override
     public void showSetupFragment() {
-        //TODO create a generic method for replacing fragments
-        if (findViewById(R.id.fragment_container) != null) {
-            TrelloSetupFragment setupFragment = new TrelloSetupFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, setupFragment).commit();
-        }
+        replaceCurrentFragment(new TrelloSetupFragment());
     }
 
     @Override
@@ -42,9 +42,17 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
 
     @Override
     public void showAccessDeniedFragment() {
+        replaceCurrentFragment(new TrelloAccessDeniedFragment());
+    }
+
+    /**
+     * Re-usable replace fragment method.
+     *
+     * @param fragment the fragment which will replace the current one.
+     */
+    private void replaceCurrentFragment(SolaDroidBaseFragment fragment) {
         if (findViewById(R.id.fragment_container) != null) {
-            TrelloAccessDeniedFragment accessDeniedFragment = new TrelloAccessDeniedFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, accessDeniedFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }
     }
 
