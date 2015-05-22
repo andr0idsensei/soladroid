@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.androidsensei.soladroid.utils.SharedPrefsUtil;
+import com.androidsensei.soladroid.utils.trello.TrelloConstants;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +34,8 @@ public class TrelloAuthJSInterface {
                 matcher.find();
                 String rawToken = matcher.group();
                 String token = rawToken.replaceAll("<[^>]*>", "").trim();
+                SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_AUTH_TOKEN_KEY, token, context);
+
                 Log.d("r1k0", "the token: " + token);
             }
         });

@@ -23,6 +23,11 @@ public final class TrelloConstants {
     public static final String TRELLO_APP_NAME = "SolaDroid";
 
     /**
+     * Key by which we refer the Trello authorization token throughout the application code.
+     */
+    public static final String TRELLO_AUTH_TOKEN_KEY = "trello_auth_token";
+
+    /**
      * Private constructor because we don't want an instance of this class.
      */
     private TrelloConstants() {}
