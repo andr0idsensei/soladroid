@@ -11,9 +11,9 @@ import com.androidsensei.soladroid.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class SetupActivityFragment extends Fragment {
+public class SetupTrelloFragment extends Fragment {
 
-    public SetupActivityFragment() {
+    public SetupTrelloFragment() {
     }
 
     @Override

@@ -18,10 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".setup.ui.SetupActivity"
-            android:label="@string/title_activity_setup" >
-        </activity>
     </application>
 
 </manifest>

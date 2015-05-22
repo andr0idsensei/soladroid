@@ -1,30 +1,30 @@
 package com.androidsensei.soladroid;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 
-import com.androidsensei.soladroid.setup.ui.TrelloAuthJSInterface;
-import com.androidsensei.soladroid.setup.ui.TrelloWebViewClient;
+import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 
-
-public class SolaDroidActivity extends ActionBarActivity {
+public class SolaDroidActivity extends Activity implements SolaDroidFragmentContract {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WebView trelloAuth = new WebView(this);
-        //R.layout.activity_sola_droid
-        setContentView(trelloAuth);
-        WebSettings webSettings = trelloAuth.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        trelloAuth.addJavascriptInterface(new TrelloAuthJSInterface(this), "html_viewer");
-        trelloAuth.setWebViewClient(new TrelloWebViewClient());
-        trelloAuth.loadUrl("https://trello.com/1/authorize?key=3022828b12fa421bed09c6f3fa69cf8c&name=SolaDroid&expiration=1day&response_type=token&scope=read,write");
+        setContentView(R.layout.activity_sola_droid);
+        showAuthFragment(savedInstanceState);
+    }
+
+    private void showAuthFragment(Bundle savedInstanceState) {
+        if (findViewById(R.id.fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            TrelloAuthFragment authFragment = new TrelloAuthFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, authFragment).commit();
+        }
     }
 
     @Override
