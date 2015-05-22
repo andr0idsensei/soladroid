@@ -18,6 +18,7 @@
         android:textSize="20sp"/>
 
     <Button
+        android:id="@+id/trello_denied_ok_button"
         android:layout_below="@id/trello_denied_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
