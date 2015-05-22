@@ -25,7 +25,6 @@ public class TrelloWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, final String url) {
         super.onPageFinished(view, url);
-        Log.d("r1k0", "page finished url: " + url);
         if (url.contains("token/approve")) {
             view.loadUrl("javascript:window.html_viewer.processHtml" +
                     "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");

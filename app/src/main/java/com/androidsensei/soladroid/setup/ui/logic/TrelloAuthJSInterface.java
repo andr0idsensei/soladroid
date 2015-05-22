@@ -30,14 +30,14 @@ public class TrelloAuthJSInterface {
 
     @JavascriptInterface
     public void processHtml(final String html) {
-        Log.d("r1k0", "print html: " + html);
         Pattern pattern = Pattern.compile("<pre>(.|\\n)*?<\\/pre>");
         Matcher matcher = pattern.matcher(html);
         matcher.find();
         String rawToken = matcher.group();
         String token = rawToken.replaceAll("<[^>]*>", "").trim();
+        Log.d("r1k0", "the token: " + token);
         SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_AUTH_TOKEN_KEY, token, context);
         ((SolaDroidFragmentContract) context).showSetupFragment();
-        Log.d("r1k0", "the token: " + token);
+
     }
 }
