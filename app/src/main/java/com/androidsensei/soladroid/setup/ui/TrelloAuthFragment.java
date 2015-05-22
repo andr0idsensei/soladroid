@@ -1,5 +1,6 @@
 package com.androidsensei.soladroid.setup.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.SolaDroidFragmentContract;
 import com.androidsensei.soladroid.setup.logic.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.logic.TrelloWebViewClient;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
@@ -22,6 +24,7 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * @author mihai
  */
 public class TrelloAuthFragment extends Fragment {
+    private SolaDroidFragmentContract contract;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +38,16 @@ public class TrelloAuthFragment extends Fragment {
         setupWebView((WebView) getView().findViewById(R.id.trello_auth_web_view));
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof SolaDroidFragmentContract) {
+            contract = (SolaDroidFragmentContract) activity;
+        } else {
+            throw new IllegalArgumentException("The activity containing this fragment should implement SolaDroidFragmentContract.");
+        }
+    }
+
     /**
      *  Sets up the web view which will connect to Trello in order to allow authorization for the app.
      *
@@ -44,7 +57,7 @@ public class TrelloAuthFragment extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new TrelloAuthJSInterface(getActivity()), "html_viewer");
-        webView.setWebViewClient(new TrelloWebViewClient());
+        webView.setWebViewClient(new TrelloWebViewClient(contract));
         webView.loadUrl(TrelloConstants.TRELLO_AUTH_URL);
     }
 }

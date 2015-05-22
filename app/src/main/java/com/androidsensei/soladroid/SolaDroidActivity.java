@@ -2,6 +2,7 @@ package com.androidsensei.soladroid;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,18 +14,30 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sola_droid);
-        showAuthFragment(savedInstanceState);
+        showAuthFragment();
     }
 
-    private void showAuthFragment(Bundle savedInstanceState) {
+    @Override
+    public void showAuthFragment() {
         if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-
             TrelloAuthFragment authFragment = new TrelloAuthFragment();
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, authFragment).commit();
         }
+    }
+
+    @Override
+    public void showSetupFragment() {
+        Log.d("r1k0", "showSetupFragment...");
+    }
+
+    @Override
+    public void showTimerFragment() {
+
+    }
+
+    @Override
+    public void showAccessDeniedFragment() {
+        Log.d("r1k0", "showAccessDeniedFragment...");
     }
 
     @Override
