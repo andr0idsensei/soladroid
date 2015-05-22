@@ -1,5 +1,6 @@
 package com.androidsensei.soladroid.setup.logic;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -23,7 +24,14 @@ public class TrelloWebViewClient extends WebViewClient {
         if (url.contains("token/approve")) {
             view.loadUrl("javascript:window.html_viewer.processHtml" +
                     "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-        } else if (!url.contains("1/authorize")) {
+        }
+    }
+
+    @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
+        if (!(url.contains("token/approve") || url.contains("1/authorize"))) {
+            view.stopLoading();
             contract.showAccessDeniedFragment();
         }
     }
