@@ -1,7 +1,7 @@
 package com.androidsensei.soladroid;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,7 +18,7 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  *
  * @author mihai
  */
-public class SolaDroidActivity extends Activity implements SolaDroidFragmentContract {
+public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFragmentContract {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

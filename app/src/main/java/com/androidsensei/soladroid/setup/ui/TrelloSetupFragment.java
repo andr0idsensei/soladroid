@@ -40,6 +40,9 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         setupBoardsSpinner();
     }
 
+    /**
+     * Sets up the boards spinner view.
+     */
     private void setupBoardsSpinner() {
         Spinner boardsSpinner = (Spinner) getView().findViewById(R.id.trello_setup_boards_section_spinner);
         ArrayAdapter<String> boardNamesAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item);
@@ -47,6 +50,13 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
         new LoadBoardsTask(boardNamesAdapter).execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
                 TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+    }
+
+    private void setupTaskLists() {
+        Spinner todoSpinner = (Spinner) getView().findViewById(R.id.trello_setup_todo_section_spinner);
+        Spinner doingSpinner = (Spinner) getView().findViewById(R.id.trello_setup_doing_section_spinner);
+        Spinner doneSpinner = (Spinner) getView().findViewById(R.id.trello_setup_done_section_spinner);
+
     }
 
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
