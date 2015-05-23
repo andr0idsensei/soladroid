@@ -8,6 +8,9 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
+ * Interface which defines the Trello API service REST requests and which is used by Retrofit to handle the requests to
+ * Trello.
+ *
  * Created by mihai on 5/17/15.
  */
 public interface TrelloService {
@@ -17,7 +20,7 @@ public interface TrelloService {
      * Returns the list of Trello open boards for the user, including the lists in the boards.
      *
      * @param appKey the application key
-     * @param memberToken the member auth token
+     * @param appToken the app auth token
      * @return the above mentioned list of boards.
      */
     @GET("/members/{memberId}/boards?filter=open")
