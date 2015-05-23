@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.trello.api.Board;
-import com.androidsensei.soladroid.trello.api.MemberToken;
+import com.androidsensei.soladroid.trello.api.model.Board;
+import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -44,6 +44,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         @Override
         protected List<Board> doInBackground(String... params) {
             Log.d("r1k0", "doInBackground params: " + params[0] + " - " + params[1]);
+            //todo remove logging - move this in a service - use some notification system
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(TrelloService.BASE_URL).setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();

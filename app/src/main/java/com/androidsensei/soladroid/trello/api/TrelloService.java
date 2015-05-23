@@ -1,8 +1,10 @@
 package com.androidsensei.soladroid.trello.api;
 
+import com.androidsensei.soladroid.trello.api.model.Board;
+import com.androidsensei.soladroid.trello.api.model.MemberToken;
+
 import java.util.List;
 
-import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

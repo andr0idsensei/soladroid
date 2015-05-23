@@ -8,7 +8,9 @@ import android.view.MenuItem;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
+import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
+import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
 /**
  * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
@@ -22,7 +24,14 @@ public class SolaDroidActivity extends Activity implements SolaDroidFragmentCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sola_droid);
-        showAuthFragment();
+
+        String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
+        if ("".equals(appKey)) {
+            showAuthFragment();
+        } else {
+            showSetupFragment();
+//            showTimerFragment(); todo - we show the setup fragment for now since we are debugging
+        }
     }
 
     @Override

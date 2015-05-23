@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid.trello.api;
+package com.androidsensei.soladroid.trello.api.model;
 
 /**
  * This class models a Trello member token with the data we need in our application. It's not a full representation of

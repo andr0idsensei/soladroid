@@ -1,20 +1,19 @@
-package com.androidsensei.soladroid.trello.api;
-
+package com.androidsensei.soladroid.trello.api.model;
 
 /**
- * This class models a Trello board with the information we need to display in the application. It's not a full representation of
- * the JSON response coming from Trello requests.
+ * This class models a Trello task list with the data we need in the app. It is not a full representation of the
+ * JSON response returned by Trello requests.
  *
  * Created by mihai on 5/23/15.
  */
-public class Board {
+public class TrelloList {
     /**
-     * The board id.
+     * The list id.
      */
     private String id;
 
     /**
-     * The board name.
+     * The list name.
      */
     private String name;
 
@@ -36,7 +35,7 @@ public class Board {
 
     @Override
     public String toString() {
-        return "Board{" +
+        return "TrelloList{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 '}';
