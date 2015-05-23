@@ -1,7 +1,6 @@
 package com.androidsensei.soladroid.setup.ui.logic;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -36,7 +35,7 @@ public class TrelloAuthJSInterface {
         String rawToken = matcher.group();
         String token = rawToken.replaceAll("<[^>]*>", "").trim();
         Log.d("r1k0", "the token: " + token);
-        SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_AUTH_TOKEN_KEY, token, context);
+        SharedPrefsUtil.savePreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, token, context);
         ((SolaDroidFragmentContract) context).showSetupFragment();
 
     }

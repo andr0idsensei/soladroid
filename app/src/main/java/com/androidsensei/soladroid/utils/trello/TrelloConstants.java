@@ -25,7 +25,7 @@ public final class TrelloConstants {
     /**
      * Key by which we refer the Trello authorization token throughout the application code.
      */
-    public static final String TRELLO_AUTH_TOKEN_KEY = "trello_auth_token";
+    public static final String TRELLO_APP_AUTH_TOKEN_KEY = "trello_app_auth_token";
 
     /**
      * The Trello authorization url.

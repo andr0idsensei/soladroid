@@ -13,13 +13,14 @@
         android:id="@+id/trello_setup_boards_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/trello_setup_boards_section_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trello_setup_boards_section_label"
+            android:gravity="center"
             android:textSize="20sp"/>
 
         <Spinner
@@ -36,13 +37,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/trello_setup_todo_section_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trello_setup_todo_section_label"
+            android:gravity="center"
             android:textSize="20sp"/>
 
         <Spinner
@@ -59,13 +61,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/trello_setup_doing_section_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trello_setup_doing_section_label"
+            android:gravity="center"
             android:textSize="20sp"/>
 
         <Spinner
@@ -82,13 +85,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/trello_setup_done_section_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trello_setup_done_section_label"
+            android:gravity="center"
             android:textSize="20sp"/>
 
         <Spinner
@@ -98,13 +102,5 @@
             android:gravity="end"
             />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/trello_setup_all_done_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/trello_setup_done_section"
-        android:layout_marginTop="24dp"
-        android:text="@string/trello_setup_all_done_button"/>
 
 </RelativeLayout>

@@ -17,9 +17,19 @@ public interface TrelloService {
      * Returns the list of Trello open boards for the user, including the lists in the boards.
      *
      * @param appKey the application key
-     * @param authToken the auth token
+     * @param memberToken the member auth token
      * @return the above mentioned list of boards.
      */
-    @GET("/boards?lists=open&list_fields=name")
-    List<Board> loadBoards(@Query("key") String appKey, @Query("token") String authToken);
+    @GET("/members/{memberId}/boards?filter=open")
+    List<Board> loadOpenBoards(@Path("memberId") String memberId, @Query("key") String appKey, @Query("token") String appToken);
+
+    /**
+     * Returns the request auth token as well as the member id for a given application authorization token.
+     *
+     * @param authToken the app authorization token
+     * @param appKey the application key
+     * @return the member object containing the described data.
+     */
+    @GET("/tokens/{authToken}")
+    MemberToken getMemberToken(@Path("authToken") String authToken, @Query("key") String appKey);
 }

@@ -8,5 +8,12 @@ import java.util.List;
 public class Board {
     private String id;
     private String name;
-    private List<TrelloList> lists;
+
+    @Override
+    public String toString() {
+        return "Board{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

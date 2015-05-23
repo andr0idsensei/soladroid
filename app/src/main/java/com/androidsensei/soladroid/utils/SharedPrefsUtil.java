@@ -26,7 +26,7 @@ public final class SharedPrefsUtil {
     public static void savePreferenceString(String key, String value, Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_FILE__NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key, value);
+        editor.putString(key, value).commit();
     }
 
     /**

@@ -14,10 +14,10 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
 /**
- * This fragment is used for setting up Trello authorization. It will use a web view to load the Trello auth URL and
- * once the user allows the application to access the Trello account it will notify it's parent activity to move to
- * the next stage in the Trello setup process. If access is not granted, it will notify the parent activity of that
- * so it can take appropriate steps.
+ * This fragment is used for setting up Trello authorization for our application. It will use a web view to load the
+ * Trello auth URL and once the user allows the application to access the Trello account it will notify it's parent
+ * activity to move to the next stage in the Trello setup process.
+ * If access is not granted, it will notify the parent activity of that so it can take appropriate steps.
  *
  * @author mihai
  */

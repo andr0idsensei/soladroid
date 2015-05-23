@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.trello.api.Board;
+import com.androidsensei.soladroid.trello.api.MemberToken;
 import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -35,19 +36,22 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         new LoadBoardsTask().execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
-                TrelloConstants.TRELLO_AUTH_TOKEN_KEY, getActivity()));
+                TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
     }
 
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
 
         @Override
         protected List<Board> doInBackground(String... params) {
-            Log.d("r1k0", "doInBackgrounb...");
+            Log.d("r1k0", "doInBackground params: " + params[0] + " - " + params[1]);
             RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(TrelloService.BASE_URL)
+                    .setEndpoint(TrelloService.BASE_URL).setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();
             TrelloService service = restAdapter.create(TrelloService.class);
-            List<Board> boards = service.loadBoards(params[0], params[1]);
+            MemberToken token = service.getMemberToken(params[1], params[0]);
+            Log.d("r1k0", "token: " + token);
+
+            List<Board> boards = service.loadOpenBoards(token.getIdMember(), params[0], params[1]);
 
             return boards;
         }
