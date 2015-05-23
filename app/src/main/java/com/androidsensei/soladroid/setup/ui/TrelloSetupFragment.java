@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.trello.api.model.Board;
@@ -35,16 +37,29 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        new LoadBoardsTask().execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
+        setupBoardsSpinner();
+    }
+
+    private void setupBoardsSpinner() {
+        Spinner boardsSpinner = (Spinner) getView().findViewById(R.id.trello_setup_boards_section_spinner);
+        ArrayAdapter<String> boardNamesAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item);
+        boardsSpinner.setAdapter(boardNamesAdapter);
+
+        new LoadBoardsTask(boardNamesAdapter).execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
                 TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
     }
 
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
+        private ArrayAdapter<String> boardNamesAdapter;
+
+        public LoadBoardsTask(ArrayAdapter<String> boardNamesAdapter) {
+            this.boardNamesAdapter = boardNamesAdapter;
+        }
 
         @Override
         protected List<Board> doInBackground(String... params) {
             Log.d("r1k0", "doInBackground params: " + params[0] + " - " + params[1]);
-            //todo remove logging - move this in a service - use some notification system
+            //todo remove logging - maybe move this in a service - use some notification system
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(TrelloService.BASE_URL).setLogLevel(RestAdapter.LogLevel.FULL)
                     .build();
@@ -60,6 +75,11 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         @Override
         protected void onPostExecute(List<Board> boards) {
             Log.d("r1k0", "trello boards: " + boards);
+            if (boards != null) {
+                for(Board board : boards) {
+                    boardNamesAdapter.add(board.getName());
+                }
+            }
         }
     }
 }
