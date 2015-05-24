@@ -1,5 +1,7 @@
 package com.androidsensei.soladroid.trello.api.model;
 
+import java.util.List;
+
 /**
  * This class models a Trello task list with the data we need in the app. It is not a full representation of the
  * JSON response returned by Trello requests.
@@ -16,6 +18,11 @@ public class TrelloList implements Model {
      * The list name.
      */
     private String name;
+
+    /**
+     * The list of cards belonging to this card list.
+     */
+    private List<Card> cards;
 
     @Override
     public String getId() {

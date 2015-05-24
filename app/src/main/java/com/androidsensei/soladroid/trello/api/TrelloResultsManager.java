@@ -4,6 +4,7 @@ import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Singleton class for keeping the results we got from Trello calls during the application's lifetime.
@@ -23,9 +24,9 @@ public final class TrelloResultsManager {
     private List<Board> trelloBoards;
 
     /**
-     * The list of Trello task lists that we loaded for the current user.
+     * The map of Trello task lists that we loaded for the current user kept by board id.
      */
-    private List<TrelloList> trelloLists;
+    private Map<String, List<TrelloList>> trelloLists;
 
     private TrelloResultsManager() {
     }
@@ -51,12 +52,12 @@ public final class TrelloResultsManager {
         this.trelloBoards = trelloBoards;
     }
 
-    public List<TrelloList> getTrelloLists() {
-        return trelloLists;
+    public List<TrelloList> getTrelloList(String boardId) {
+        return trelloLists.get(boardId);
     }
 
-    public void setTrelloLists(List<TrelloList> trelloLists) {
-        this.trelloLists = trelloLists;
+    public void putTrelloLists(String boardId, List<TrelloList> trelloLists) {
+        //todo implement this
     }
 
     /**
