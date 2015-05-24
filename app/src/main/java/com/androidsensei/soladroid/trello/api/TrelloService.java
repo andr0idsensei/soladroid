@@ -2,6 +2,7 @@ package com.androidsensei.soladroid.trello.api;
 
 import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
+import com.androidsensei.soladroid.trello.api.model.Model;
 
 import java.util.List;
 

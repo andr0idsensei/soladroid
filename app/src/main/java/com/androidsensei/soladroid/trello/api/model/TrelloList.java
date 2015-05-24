@@ -6,7 +6,7 @@ package com.androidsensei.soladroid.trello.api.model;
  *
  * Created by mihai on 5/23/15.
  */
-public class TrelloList {
+public class TrelloList implements Model {
     /**
      * The list id.
      */
@@ -17,6 +17,7 @@ public class TrelloList {
      */
     private String name;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -25,6 +26,7 @@ public class TrelloList {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

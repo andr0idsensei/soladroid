@@ -7,7 +7,7 @@ package com.androidsensei.soladroid.trello.api.model;
  *
  * Created by mihai on 5/23/15.
  */
-public class Board {
+public class Board implements Model {
     /**
      * The board id.
      */
@@ -18,6 +18,7 @@ public class Board {
      */
     private String name;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -26,6 +27,7 @@ public class Board {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

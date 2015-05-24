@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.TrelloService;
@@ -45,11 +45,16 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
      */
     private void setupBoardsSpinner() {
         Spinner boardsSpinner = (Spinner) getView().findViewById(R.id.trello_setup_boards_section_spinner);
-        ArrayAdapter<String> boardNamesAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item);
+        SetupSpinnerAdapter boardNamesAdapter = new SetupSpinnerAdapter(getActivity().getLayoutInflater());
         boardsSpinner.setAdapter(boardNamesAdapter);
 
-        new LoadBoardsTask(boardNamesAdapter).execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
-                TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+        TrelloResultsManager resultsManager = TrelloResultsManager.getInstance();
+        if (resultsManager.hasBoards()) {
+            boardNamesAdapter.addItems(resultsManager.getTrelloBoards());
+        } else {
+            new LoadBoardsTask(boardNamesAdapter).execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
+                    TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+        }
     }
 
     private void setupTaskLists() {
@@ -60,9 +65,9 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
     }
 
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
-        private ArrayAdapter<String> boardNamesAdapter;
+        private SetupSpinnerAdapter boardNamesAdapter;
 
-        public LoadBoardsTask(ArrayAdapter<String> boardNamesAdapter) {
+        public LoadBoardsTask(SetupSpinnerAdapter boardNamesAdapter) {
             this.boardNamesAdapter = boardNamesAdapter;
         }
 
@@ -86,9 +91,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         protected void onPostExecute(List<Board> boards) {
             Log.d("r1k0", "trello boards: " + boards);
             if (boards != null) {
-                for(Board board : boards) {
-                    boardNamesAdapter.add(board.getName());
-                }
+                boardNamesAdapter.addItems(boards);
             }
         }
     }

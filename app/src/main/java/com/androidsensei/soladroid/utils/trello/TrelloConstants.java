@@ -31,7 +31,7 @@ public final class TrelloConstants {
      * The Trello authorization url.
      */
     public static final String TRELLO_AUTH_URL = "https://trello.com/1/authorize?key="+ TRELLO_APP_KEY + "&name=" +
-            TRELLO_APP_NAME + "&expiration=1day&response_type=token&scope=read,write";
+            TRELLO_APP_NAME + "&expiration=never&response_type=token&scope=read,write";
 
     /**
      * Private constructor because we don't want an instance of this class.
