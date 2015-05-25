@@ -25,14 +25,29 @@ import java.util.List;
 /**
  * The setup fragment will display the user's Trello boards and will allow her to choose which board to use, as well
  * as match lists in the board to the to do, doing, done lists in the application.
+ *
+ * TODO save the user selections and complete the setup
+ * TODO re-iterate the UI and polish it
  */
 public class TrelloSetupFragment extends SolaDroidBaseFragment {
+    /**
+     * The adapter for showing the boards.
+     */
     private SetupSpinnerAdapter boardNamesAdapter;
 
+    /**
+     * The adapter for selecting the to do lists.
+     */
     private SetupSpinnerAdapter todoListsAdapter;
 
+    /**
+     * The adapter for selecting the doing lists.
+     */
     private SetupSpinnerAdapter doingListsAdapter;
 
+    /**
+     * The adapter for selecting the done lists.
+     */
     private SetupSpinnerAdapter doneListsAdapter;
 
     @Override
@@ -69,8 +84,11 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Board selectedBoard = (Board) boardNamesAdapter.getItem(position);
-                if (resultsManager.hasLists()) { //todo lists need to be kept in a map
-
+                if (resultsManager.hasLists(selectedBoard.getId())) {
+                    List<TrelloList> taskList = resultsManager.getTrelloList(selectedBoard.getId());
+                    todoListsAdapter.replaceItems(taskList);
+                    doingListsAdapter.replaceItems(taskList);
+                    doneListsAdapter.replaceItems(taskList);
                 } else {
                     new LoadTaskListsTask(todoListsAdapter, doingListsAdapter, doneListsAdapter).execute(selectedBoard.getId(),
                             TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY,
@@ -129,7 +147,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         protected void onPostExecute(List<Board> boards) {
             Log.d("r1k0", "trello boards: " + boards);
             if (boards != null) {
-                TrelloResultsManager.getInstance().setTrelloBoards(boards);
+                TrelloResultsManager.getInstance().putTrelloBoards(boards);
                 boardNamesAdapter.addItems(boards);
             }
         }
@@ -154,6 +172,11 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
          */
         private SetupSpinnerAdapter doneSpinner;
 
+        /**
+         * The board id for which we want to load the lists.
+         */
+        private String boardId;
+
         public LoadTaskListsTask(SetupSpinnerAdapter todoSpinner, SetupSpinnerAdapter doingSpinner,
                                  SetupSpinnerAdapter doneSpinner) {
             this.todoSpinner = todoSpinner;
@@ -163,8 +186,9 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
         @Override
         protected List<TrelloList> doInBackground(String... params) {
+            boardId = params[0];
             TrelloService service = TrelloServiceFactory.createService();
-            List<TrelloList> trelloLists = service.loadTaskListsForBoard(params[0], params[1], params[2]);
+            List<TrelloList> trelloLists = service.loadTaskListsForBoard(boardId, params[1], params[2]);
 
             return trelloLists;
         }
@@ -172,10 +196,10 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         @Override
         protected void onPostExecute(List<TrelloList> trelloLists) {
             if (trelloLists != null) {
-                TrelloResultsManager.getInstance().setTrelloLists(trelloLists);
-                todoSpinner.addItems(trelloLists);
-                doingSpinner.addItems(trelloLists);
-                doneSpinner.addItems(trelloLists);
+                TrelloResultsManager.getInstance().putTrelloLists(boardId, trelloLists);
+                todoSpinner.replaceItems(trelloLists);
+                doingSpinner.replaceItems(trelloLists);
+                doneSpinner.replaceItems(trelloLists);
             }
         }
     }

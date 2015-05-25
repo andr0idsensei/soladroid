@@ -73,4 +73,10 @@ public class SetupSpinnerAdapter extends BaseAdapter {
         trelloDataList.addAll(modelList);
         notifyDataSetChanged();
     }
+
+    public void replaceItems(List<? extends Model> modelList) {
+        trelloDataList.clear();
+        trelloDataList.addAll(modelList);
+        notifyDataSetChanged();
+    }
 }

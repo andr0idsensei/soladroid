@@ -3,6 +3,7 @@ package com.androidsensei.soladroid.trello.api;
 import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public final class TrelloResultsManager {
     /**
      * The map of Trello task lists that we loaded for the current user kept by board id.
      */
-    private Map<String, List<TrelloList>> trelloLists;
+    private Map<String, List<TrelloList>> trelloLists = new HashMap<>();
 
     private TrelloResultsManager() {
     }
@@ -48,7 +49,7 @@ public final class TrelloResultsManager {
         return trelloBoards;
     }
 
-    public void setTrelloBoards(List<Board> trelloBoards) {
+    public void putTrelloBoards(List<Board> trelloBoards) {
         this.trelloBoards = trelloBoards;
     }
 
@@ -56,8 +57,8 @@ public final class TrelloResultsManager {
         return trelloLists.get(boardId);
     }
 
-    public void putTrelloLists(String boardId, List<TrelloList> trelloLists) {
-        //todo implement this
+    public void putTrelloLists(String boardId, List<TrelloList> trelloList) {
+        trelloLists.put(boardId, trelloList);
     }
 
     /**
@@ -74,7 +75,9 @@ public final class TrelloResultsManager {
      *
      * @return true if the task lists list is not null or empty
      */
-    public boolean hasLists() {
-        return trelloLists != null && !trelloLists.isEmpty();
+    public boolean hasLists(String boardId) {
+        List<TrelloList> taskList = trelloLists.get(boardId);
+
+        return taskList != null && !taskList.isEmpty();
     }
 }

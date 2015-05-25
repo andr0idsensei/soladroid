@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
+import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
@@ -15,6 +16,10 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 /**
  * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
  * the users.
+ *
+ * TODO polish the UI interface
+ * TODO implement the Pomodoro timer screen
+ * TODO add some error handling for Trello requests
  *
  * @author mihai
  */
@@ -26,11 +31,15 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         setContentView(R.layout.activity_sola_droid);
 
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
-        if ("".equals(appKey)) {
-            showAuthFragment();
+        String setupState = SharedPrefsUtil.loadPreferenceString(AppConstants.IS_APP_SETUP_KEY, this);
+        if ("".equals(setupState)) {
+            if ("".equals(appKey)) {
+                showAuthFragment();
+            } else {
+                showSetupFragment();
+            }
         } else {
-            showSetupFragment();
-//            showTimerFragment(); todo - we show the setup fragment for now since we are debugging
+            showTimerFragment();
         }
     }
 

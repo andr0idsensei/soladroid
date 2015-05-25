@@ -33,8 +33,9 @@ public class TrelloWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        Log.d("r1k0", "pageStarted - url: " + url);
         super.onPageStarted(view, url, favicon);
-        if (!(url.contains("token/approve") || url.contains("1/authorize"))) {
+        if ("https://trello.com/".equals(url)) { // means that the user pressed the deny button and the default trello url is loaded.
             view.stopLoading();
             contract.showAccessDeniedFragment();
         }
