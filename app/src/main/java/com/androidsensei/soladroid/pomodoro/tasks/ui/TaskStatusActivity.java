@@ -38,7 +38,7 @@ public class TaskStatusActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_status);
 
-        pager = (ViewPager) findViewById(R.id.tasks_view_pager);
+        pager = (ViewPager) findViewById(R.id.tasks_status_view_pager);
         PagerAdapter pagerAdapter = new TaskListsPagerAdapter(getFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
