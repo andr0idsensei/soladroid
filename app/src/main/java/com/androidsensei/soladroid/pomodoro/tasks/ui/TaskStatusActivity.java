@@ -1,6 +1,5 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -56,7 +55,8 @@ public class TaskStatusActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_task_status, menu);
 
         menu.findItem(R.id.task_status_action_previous).setEnabled(pager.getCurrentItem() > 0);
-
+//        menu.findItem(R.id.task_status_action_next).setEnabled(pager.getCurrentItem() > 0);
+//      TODO figure out how to disable the next action when no pages are available
         return true;
     }
 

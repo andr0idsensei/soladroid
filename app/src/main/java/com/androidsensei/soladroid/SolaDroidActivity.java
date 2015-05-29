@@ -38,6 +38,8 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
             showTaskStatusActivity();
+            //TODO maybe move this in application or figure out a way to make navigation work ok when setup activity is
+            //started first
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
