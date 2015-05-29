@@ -2,11 +2,13 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.androidsensei.soladroid.pomodoro.tasks.ui.TasksFragment">
+             tools:context="com.androidsensei.soladroid.pomodoro.tasks.ui.TaskCardsFragment">
 
-    <TextView android:id="@+id/task_status_list_name"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/task_status_card_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:scrollbars="vertical"
+        />
 
 </FrameLayout>

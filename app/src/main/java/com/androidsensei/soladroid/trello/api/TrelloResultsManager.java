@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.trello.api;
 
 import com.androidsensei.soladroid.trello.api.model.Board;
+import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 
 import java.util.HashMap;
@@ -28,6 +29,11 @@ public final class TrelloResultsManager {
      * The map of Trello task lists that we loaded for the current user kept by board id.
      */
     private Map<String, List<TrelloList>> trelloLists = new HashMap<>();
+
+    /**
+     * The map of Trello cards that belong to our to do, doing and done task lists, kept by Trello list id.
+     */
+    private Map<String, List<Card>> trelloCards = new HashMap<>();
 
     private TrelloResultsManager() {
     }
@@ -57,8 +63,17 @@ public final class TrelloResultsManager {
         return trelloLists.get(boardId);
     }
 
+
     public void putTrelloLists(String boardId, List<TrelloList> trelloList) {
         trelloLists.put(boardId, trelloList);
+    }
+
+    public void putCardList(String listId, List<Card> trelloCards) {
+        this.trelloCards.put(listId, trelloCards);
+    }
+
+    public List<Card> getTrelloCards(String listId) {
+        return trelloCards.get(listId);
     }
 
     /**
@@ -79,5 +94,17 @@ public final class TrelloResultsManager {
         List<TrelloList> taskList = trelloLists.get(boardId);
 
         return taskList != null && !taskList.isEmpty();
+    }
+
+    /**
+     * Checks to see if we have some cards loaded.
+     *
+     * @param listId the Trello list id.
+     * @return true if we have a loaded list of cards corresponding to the given list id.
+     */
+    public boolean hasCards(String listId) {
+        List<Card> cardList = trelloCards.get(listId);
+
+        return cardList != null && ! cardList.isEmpty();
     }
 }

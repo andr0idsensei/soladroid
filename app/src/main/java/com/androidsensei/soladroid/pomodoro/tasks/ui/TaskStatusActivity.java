@@ -98,13 +98,13 @@ public class TaskStatusActivity extends ActionBarActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TasksFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, TaskStatusActivity.this));
 
                 case 1:
-                    return TasksFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, TaskStatusActivity.this));
 
                 case 2:
-                    return TasksFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, TaskStatusActivity.this));
 
                 default:
                     return null;
