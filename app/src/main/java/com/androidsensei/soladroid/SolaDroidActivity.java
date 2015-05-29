@@ -5,7 +5,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidsensei.soladroid.pomodore.ui.PomodoroFragment;
+import com.androidsensei.soladroid.pomodoro.tasks.ui.TasksFragment;
+import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
@@ -56,6 +57,11 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showTimerFragment() {
+        replaceCurrentFragment(new TasksFragment());
+    }
+
+    @Override
+    public void showTasksFragment() {
         replaceCurrentFragment(new PomodoroFragment());
     }
 

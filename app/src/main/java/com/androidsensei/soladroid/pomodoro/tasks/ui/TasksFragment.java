@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid.pomodore.ui;
+package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,12 +9,15 @@ import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
- * Created by mihai on 5/29/15.
+ *
  */
-public class PomodoroFragment extends SolaDroidBaseFragment {
+public class TasksFragment extends SolaDroidBaseFragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_trello_auth, container, false);
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_tasks, container, false);
     }
+
 }

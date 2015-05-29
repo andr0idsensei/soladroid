@@ -7,4 +7,7 @@
     <string name="trello_setup_doing_section_label">Pick Doing List</string>
     <string name="trello_setup_done_section_label">Pick Done List</string>
     <string name="trello_setup_all_done_button">All Done</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

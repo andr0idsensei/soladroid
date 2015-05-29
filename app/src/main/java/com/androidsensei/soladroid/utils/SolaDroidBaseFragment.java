@@ -25,4 +25,10 @@ public abstract class SolaDroidBaseFragment extends Fragment {
             throw new IllegalArgumentException("The activity containing this fragment should implement SolaDroidFragmentContract.");
         }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        contract = null;
+    }
 }
