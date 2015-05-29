@@ -1,10 +1,12 @@
 package com.androidsensei.soladroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TasksFragment;
 import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
@@ -35,7 +37,7 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
-            showTimerFragment();
+            showTaskStatusActivity();
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
@@ -57,12 +59,12 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showTimerFragment() {
-        replaceCurrentFragment(new TasksFragment());
+
     }
 
     @Override
-    public void showTasksFragment() {
-        replaceCurrentFragment(new PomodoroFragment());
+    public void showTaskStatusActivity() {
+        startActivity(new Intent(this, TaskStatusActivity.class));
     }
 
     @Override
