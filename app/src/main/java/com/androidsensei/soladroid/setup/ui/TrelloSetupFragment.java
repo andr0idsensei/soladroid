@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
@@ -15,6 +17,7 @@ import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
+import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
@@ -26,7 +29,6 @@ import java.util.List;
  * The setup fragment will display the user's Trello boards and will allow her to choose which board to use, as well
  * as match lists in the board to the to do, doing, done lists in the application.
  *
- * TODO save the user selections and complete the setup
  * TODO re-iterate the UI and polish it
  */
 public class TrelloSetupFragment extends SolaDroidBaseFragment {
@@ -50,6 +52,21 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
      */
     private SetupSpinnerAdapter doneListsAdapter;
 
+    /**
+     * The Trello list containing the to do tasks.
+     */
+    private TrelloList todoList;
+
+    /**
+     * The Trello list containing the doing tasks.
+     */
+    private TrelloList doingList;
+
+    /**
+     * The Trello list containing the done tasks.
+     */
+    private TrelloList doneList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +79,30 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
         setupTaskLists();
         setupBoardsSpinner();
+        setupAllDoneButton();
+    }
+
+    /**
+     * Sets up the save button for when the setup is complete.
+     */
+    private void setupAllDoneButton() {
+        Button allDoneButton = (Button) getView().findViewById(R.id.trello_setup_all_done_button);
+
+        allDoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (todoList == null || doingList == null || doneList == null) {
+                    Toast.makeText(getActivity(), "Please make sure you selected lists for todo, doing and done.", Toast.LENGTH_LONG).show();
+                } else {
+                    SharedPrefsUtil.savePreferenceString(AppConstants.TODO_LIST_KEY, todoList.getId(), getActivity());
+                    SharedPrefsUtil.savePreferenceString(AppConstants.DOING_LIST_KEY, doingList.getId(), getActivity());
+                    SharedPrefsUtil.savePreferenceString(AppConstants.DONE_LIST_KEY, doneList.getId(), getActivity());
+                    SharedPrefsUtil.savePreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, true, getActivity());
+
+                    contract.showTimerFragment();
+                }
+            }
+        });
     }
 
     /**
@@ -98,7 +139,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                //no implementation needed
             }
         });
     }
@@ -119,6 +160,42 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         todoSpinner.setAdapter(todoListsAdapter);
         doingSpinner.setAdapter(doingListsAdapter);
         doneSpinner.setAdapter(doneListsAdapter);
+
+        todoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                todoList = (TrelloList) todoListsAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //no implementation needed
+            }
+        });
+
+        doingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                doingList = (TrelloList) doingListsAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //no implementation needed
+            }
+        });
+
+        doneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                doneList = (TrelloList) doneListsAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //no implementation needed
+            }
+        });
     }
 
     /**
@@ -188,9 +265,8 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         protected List<TrelloList> doInBackground(String... params) {
             boardId = params[0];
             TrelloService service = TrelloServiceFactory.createService();
-            List<TrelloList> trelloLists = service.loadTaskListsForBoard(boardId, params[1], params[2]);
 
-            return trelloLists;
+            return service.loadTaskListsForBoard(boardId, params[1], params[2]);
         }
 
         @Override

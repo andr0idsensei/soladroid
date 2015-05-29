@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidsensei.soladroid.pomodore.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
@@ -31,15 +32,15 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         setContentView(R.layout.activity_sola_droid);
 
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
-        String setupState = SharedPrefsUtil.loadPreferenceString(AppConstants.IS_APP_SETUP_KEY, this);
-        if ("".equals(setupState)) {
+        boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
+        if (isSetup) {
+            showTimerFragment();
+        } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
             } else {
                 showSetupFragment();
             }
-        } else {
-            showTimerFragment();
         }
     }
 
@@ -55,7 +56,7 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showTimerFragment() {
-
+        replaceCurrentFragment(new PomodoroFragment());
     }
 
     @Override

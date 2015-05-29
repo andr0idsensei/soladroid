@@ -2,11 +2,11 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:gravity="center"
                 tools:context="com.androidsensei.soladroid.setup.ui.TrelloSetupFragment">
 
     <LinearLayout
@@ -19,8 +19,8 @@
             android:id="@+id/trello_setup_boards_section_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trello_setup_boards_section_label"
             android:gravity="center"
+            android:text="@string/trello_setup_boards_section_label"
             android:textSize="20sp"/>
 
         <Spinner
@@ -33,9 +33,9 @@
 
     <LinearLayout
         android:id="@+id/trello_setup_todo_section"
-        android:layout_below="@id/trello_setup_boards_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/trello_setup_boards_section"
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
@@ -43,8 +43,8 @@
             android:id="@+id/trello_setup_todo_section_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trello_setup_todo_section_label"
             android:gravity="center"
+            android:text="@string/trello_setup_todo_section_label"
             android:textSize="20sp"/>
 
         <Spinner
@@ -57,9 +57,9 @@
 
     <LinearLayout
         android:id="@+id/trello_setup_doing_section"
-        android:layout_below="@id/trello_setup_todo_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/trello_setup_todo_section"
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
@@ -67,8 +67,8 @@
             android:id="@+id/trello_setup_doing_section_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trello_setup_doing_section_label"
             android:gravity="center"
+            android:text="@string/trello_setup_doing_section_label"
             android:textSize="20sp"/>
 
         <Spinner
@@ -81,9 +81,9 @@
 
     <LinearLayout
         android:id="@+id/trello_setup_done_section"
-        android:layout_below="@id/trello_setup_doing_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/trello_setup_doing_section"
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
@@ -91,8 +91,8 @@
             android:id="@+id/trello_setup_done_section_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trello_setup_done_section_label"
             android:gravity="center"
+            android:text="@string/trello_setup_done_section_label"
             android:textSize="20sp"/>
 
         <Spinner
@@ -102,5 +102,13 @@
             android:gravity="end"
             />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/trello_setup_all_done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/trello_setup_done_section"
+        android:layout_centerHorizontal="true"
+        android:text="@string/trello_setup_all_done_button"/>
 
 </RelativeLayout>

@@ -26,7 +26,7 @@ public final class SharedPrefsUtil {
     public static void savePreferenceString(String key, String value, Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_FILE__NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key, value).commit();
+        editor.putString(key, value).apply();
     }
 
     /**
@@ -39,5 +39,30 @@ public final class SharedPrefsUtil {
     public static String loadPreferenceString(String key, Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_FILE__NAME, Context.MODE_PRIVATE);
         return preferences.getString(key, "");
+    }
+
+    /**
+     * Saves a boolean shared preference value represented by the given key.
+     *
+     * @param key the key by which to refer the shared preference value.
+     * @param value the value of the shared preference.
+     * @param context the context used for getting the preference file.
+     */
+    public static void savePreferenceBoolean(String key, Boolean value, Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_FILE__NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(key, value).apply();
+    }
+
+    /**
+     * Loads a boolean shared preference value represented by the given key.
+     *
+     * @param key the key by which to refer the shared preference value.
+     * @param context the context used for getting the preference file.
+     * @return true if the value is found and is true, false otherwise.
+     */
+    public static Boolean loadPreferenceBoolean(String key, Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_FILE__NAME, Context.MODE_PRIVATE);
+        return preferences.getBoolean(key, false);
     }
 }
