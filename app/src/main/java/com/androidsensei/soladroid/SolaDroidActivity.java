@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
-import com.androidsensei.soladroid.pomodoro.tasks.ui.TasksFragment;
-import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
@@ -22,8 +20,8 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * the users.
  *
  * TODO polish the UI interface
- * TODO implement the Pomodoro timer screen
  * TODO add some error handling for Trello requests
+ * TODO update navigation between activities if needed - clean interfaces
  *
  * @author mihai
  */
@@ -38,8 +36,6 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
             showTaskStatusActivity();
-            //TODO maybe move this in application or figure out a way to make navigation work ok when setup activity is
-            //started first
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
@@ -67,6 +63,7 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
     @Override
     public void showTaskStatusActivity() {
         startActivity(new Intent(this, TaskStatusActivity.class));
+        finish();
     }
 
     @Override
