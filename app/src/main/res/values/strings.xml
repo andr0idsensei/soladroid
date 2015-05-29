@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">SolaDroid</string>
+    <string name="trello_access_denied">You have chosen not to allow SolaDroid to access your Trello account.\nIf you changed your mind, please press the "Ok" button, otherwise the Android back button will exist the application.</string>
+    <string name="ok">OK</string>
+    <string name="trello_setup_boards_section_label">Your Boards</string>
+    <string name="trello_setup_todo_section_label">Pick To Do List</string>
+    <string name="trello_setup_doing_section_label">Pick Doing List</string>
+    <string name="trello_setup_done_section_label">Pick Done List</string>
+    <string name="trello_setup_all_done_button">All Done</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
