@@ -20,7 +20,9 @@ import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
 import java.util.List;
 
 /**
+ *  Displays the Trello task cards for each of the to do, doing and done lists.
  *
+ *  TODO debug and see why the recycler view is not working correctly.
  */
 public class TaskCardsFragment extends Fragment {
 

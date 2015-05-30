@@ -99,7 +99,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
                     SharedPrefsUtil.savePreferenceString(AppConstants.DONE_LIST_KEY, doneList.getId(), getActivity());
                     SharedPrefsUtil.savePreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, true, getActivity());
 
-                    contract.showTimerFragment();
+                    contract.showTaskStatusActivity();
                 }
             }
         });

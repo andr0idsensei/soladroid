@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+
         viewHolder.cardName.setText(trelloCards.get(position).getName());
     }
 
@@ -56,6 +58,7 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
      * @param newTrelloCards the new Trello cards to display.
      */
     public void replaceItems(List<Card> newTrelloCards) {
+        Log.d("r1k0", "the Trello cards: " + newTrelloCards);
         trelloCards.clear();
         trelloCards.addAll(newTrelloCards);
         notifyDataSetChanged();

@@ -12,12 +12,12 @@ public class Card implements Model {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
