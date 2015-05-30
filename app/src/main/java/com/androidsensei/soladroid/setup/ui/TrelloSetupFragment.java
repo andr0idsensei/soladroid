@@ -127,11 +127,14 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
                 Board selectedBoard = (Board) boardNamesAdapter.getItem(position);
                 if (resultsManager.hasLists(selectedBoard.getId())) {
                     List<TrelloList> taskList = resultsManager.getTrelloList(selectedBoard.getId());
-                    todoListsAdapter.replaceItems(taskList);
-                    doingListsAdapter.replaceItems(taskList);
-                    doneListsAdapter.replaceItems(taskList);
+                    trelloTasksLoaded(taskList);
                 } else {
-                    new LoadTaskListsTask(todoListsAdapter, doingListsAdapter, doneListsAdapter).execute(selectedBoard.getId(),
+                    new LoadTaskListsTask(new LoadTrelloListsCallback() {
+                        @Override
+                        public void onTaskListsLoaded(List<TrelloList> trelloLists) {
+                            trelloTasksLoaded(trelloLists);
+                        }
+                    }).execute(selectedBoard.getId(),
                             TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY,
                                     getActivity()));
                 }
@@ -198,6 +201,16 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         });
     }
 
+    private void trelloTasksLoaded(List<TrelloList> trelloLists) {
+        todoListsAdapter.replaceItems(trelloLists);
+        doingListsAdapter.replaceItems(trelloLists);
+        doneListsAdapter.replaceItems(trelloLists);
+
+        todoList = trelloLists.get(0);
+        doingList = trelloLists.get(0);
+        doneList = trelloLists.get(0);
+    }
+
     /**
      * AsyncTask for loading the Trello open boards in the spinner.
      */
@@ -235,30 +248,17 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
      */
     private static class LoadTaskListsTask extends AsyncTask<String, Void, List<TrelloList>> {
         /**
-         * The spinner adapter for the to do spinner.
+         * The callback for when the lists get loaded.
          */
-        private SetupSpinnerAdapter todoSpinner;
-
-        /**
-         * The spinner adapter for the doing spinner.
-         */
-        private SetupSpinnerAdapter doingSpinner;
-
-        /**
-         * The spinner adapter for the done spinner.
-         */
-        private SetupSpinnerAdapter doneSpinner;
+        private LoadTrelloListsCallback callback;
 
         /**
          * The board id for which we want to load the lists.
          */
         private String boardId;
 
-        public LoadTaskListsTask(SetupSpinnerAdapter todoSpinner, SetupSpinnerAdapter doingSpinner,
-                                 SetupSpinnerAdapter doneSpinner) {
-            this.todoSpinner = todoSpinner;
-            this.doingSpinner = doingSpinner;
-            this.doneSpinner = doneSpinner;
+        public LoadTaskListsTask(LoadTrelloListsCallback callback) {
+            this.callback = callback;
         }
 
         @Override
@@ -273,9 +273,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         protected void onPostExecute(List<TrelloList> trelloLists) {
             if (trelloLists != null) {
                 TrelloResultsManager.getInstance().putTrelloLists(boardId, trelloLists);
-                todoSpinner.replaceItems(trelloLists);
-                doingSpinner.replaceItems(trelloLists);
-                doneSpinner.replaceItems(trelloLists);
+                callback.onTaskListsLoaded(trelloLists);
             }
         }
     }
