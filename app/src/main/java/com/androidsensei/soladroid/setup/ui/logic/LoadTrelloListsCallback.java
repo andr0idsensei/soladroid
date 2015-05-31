@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid.setup.ui;
+package com.androidsensei.soladroid.setup.ui.logic;
 
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 

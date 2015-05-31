@@ -79,7 +79,7 @@ public class TaskCardsFragment extends Fragment {
                 @Override
                 public void onCardTap(Card cardData) {
                     Intent startTask = new Intent(getActivity(), SolaDroidActivity.class);
-                    startTask.putExtra(AppConstants.START_TASK_CARD_KEY, cardData);
+                    startTask.putExtra(AppConstants.ARG_START_TASK_CARD, cardData);
                     startActivity(startTask);
                 }
             });

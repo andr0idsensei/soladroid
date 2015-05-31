@@ -32,5 +32,5 @@ public final class AppConstants {
     /**
      * Key by which we refer the Trello task card which we intent to start working on.
      */
-    public static String START_TASK_CARD_KEY = "start_task_card";
+    public static String ARG_START_TASK_CARD = "start_task_card";
 }

@@ -1,5 +1,7 @@
 package com.androidsensei.soladroid;
 
+import com.androidsensei.soladroid.trello.api.model.Card;
+
 /**
  * This interface provides the contract for navigating between fragments in the SolaDroidActivity.
  *
@@ -19,7 +21,7 @@ public interface SolaDroidFragmentContract {
     /**
      * Show the fragment for timing the tasks using the Pomodoro technique.
      */
-    void showTimerFragment();
+    void showPomodoroFragment(Card card);
 
     /**
      * Show the fragment for choosing the Trello tasks to work on. - todo this is going to be an activity

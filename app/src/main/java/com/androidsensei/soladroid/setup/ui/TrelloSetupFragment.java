@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.setup.ui.logic.LoadTrelloListsCallback;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;

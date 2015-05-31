@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
+import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
@@ -36,9 +37,9 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
-            Card card = (Card) getIntent().getSerializableExtra(AppConstants.START_TASK_CARD_KEY);
+            Card card = (Card) getIntent().getSerializableExtra(AppConstants.ARG_START_TASK_CARD);
             if (card != null) {
-                showTimerFragment();
+                showPomodoroFragment(card);
             } else {
                 showTaskStatusActivity();
             }
@@ -62,8 +63,9 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
     }
 
     @Override
-    public void showTimerFragment() {
-
+    public void showPomodoroFragment(Card card) {
+        PomodoroFragment pomodoroFragment = PomodoroFragment.createFragment(card);
+        replaceCurrentFragment(pomodoroFragment);
     }
 
     @Override
