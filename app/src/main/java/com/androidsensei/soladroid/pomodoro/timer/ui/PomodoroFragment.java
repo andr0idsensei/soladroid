@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.pomodoro.timer.ui;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
     private String timeSpent;
 
+    private CountDownTimer pomodoroTimer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -32,6 +35,24 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
+
+    }
+
+    /**
+     * 
+     */
+    private void startPomodoroCounter() {
+        pomodoroTimer = new CountDownTimer(AppConstants.POMODORO_LENGTH, AppConstants.POMODORO_COUNTER_TICK) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
     }
 
     public static PomodoroFragment createFragment(Card card) {
