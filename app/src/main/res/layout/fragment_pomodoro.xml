@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
+                android:padding="@dimen/space_4"
                 android:gravity="center"
     >
 
@@ -10,9 +10,9 @@
         android:id="@+id/timer_pomodoro_counter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Pomodoros: 5"
-        android:textSize="22sp"/>
+        android:layout_marginBottom="@dimen/space_3"
+        android:text="@string/timer_pomodoro_counter"
+        android:textSize="@dimen/text_headline"/>
 
     <TextView
         android:id="@+id/timer_pomodoro_timer"
@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/timer_pomodoro_counter"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="25:00"
-        android:textSize="64sp"
+        android:layout_marginTop="@dimen/space_3"
+        android:layout_marginBottom="@dimen/space_3"
+        android:text="@string/timer_pomodoro_timer"
+        android:textSize="@dimen/text_xxl"
         android:textColor="@color/red"
         android:textStyle="bold"/>
 
@@ -32,64 +32,91 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/timer_pomodoro_timer"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Time spent: 00:50:00"
-        android:textSize="22sp"/>
+        android:layout_marginTop="@dimen/space_3"
+        android:layout_marginBottom="@dimen/space_3"
+        android:text="@string/timer_pomodoro_total"
+        android:textSize="@dimen/text_headline"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/timer_pomodoro_running_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:layout_marginTop="@dimen/space_3"
+        android:visibility="visible"
+        android:orientation="horizontal"
         android:layout_below="@id/timer_pomodoro_total">
 
         <Button
             android:id="@+id/timer_pomodoro_pause"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="Pause"/>
+            android:layout_marginEnd="@dimen/space_4"
+            android:layout_weight="1"
+            android:text="@string/timer_pomodoro_pause"/>
 
         <Button
             android:id="@+id/timer_pomodoro_stop"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Stop"/>
+            android:layout_weight="1"
+            android:text="@string/timer_pomodoro_stop"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/timer_pomodoro_finished_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/space_3"
+        android:orientation="vertical"
+        android:visibility="invisible"
         android:layout_below="@id/timer_pomodoro_total">
 
-        <Button
-            android:id="@+id/timer_pomodoro_done"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="Done"/>
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/timer_pomodoro_five"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/timer_pomodoro_done"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_4"
+                android:text="@string/timer_pomodoro_done"/>
+
+            <Button
+                android:id="@+id/timer_pomodoro_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/timer_pomodoro_back"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/timer_pomodoro_done"
-            android:layout_alignParentStart="true"
-            android:text="Take Five"/>
+            android:layout_marginTop="@dimen/space_4"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/timer_pomodoro_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="Back"/>
+            <Button
+                android:id="@+id/timer_pomodoro_five"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_4"
+                android:text="@string/timer_pomodoro_five"/>
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/timer_pomodoro_fifteen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/timer_pomodoro_fifteen"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>
