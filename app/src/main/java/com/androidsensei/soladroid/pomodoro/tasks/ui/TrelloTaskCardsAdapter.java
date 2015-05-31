@@ -43,8 +43,9 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-
-        viewHolder.cardName.setText(trelloCards.get(position).getName());
+        Card card = trelloCards.get(position);
+        viewHolder.cardName.setText(card.getName());
+        viewHolder.cardDescription.setText(card.getDescription());
     }
 
     @Override
@@ -70,9 +71,12 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView cardName;
 
+        public TextView cardDescription;
+
         public ViewHolder(View card) {
             super(card);
             cardName = (TextView) card.findViewById(R.id.task_status_trello_card_name);
+            cardDescription = (TextView) card.findViewById(R.id.task_status_trello_card_description);
         }
     }
 
