@@ -10,6 +10,7 @@ import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
+import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -35,7 +36,12 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
-            showTaskStatusActivity();
+            Card card = (Card) getIntent().getSerializableExtra(AppConstants.START_TASK_CARD_KEY);
+            if (card != null) {
+                showTimerFragment();
+            } else {
+                showTaskStatusActivity();
+            }
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();

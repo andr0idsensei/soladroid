@@ -1,11 +1,14 @@
 package com.androidsensei.soladroid.trello.api.model;
 
+import java.io.Serializable;
+
 /**
  * Class that models a Trello card (task).
+ * TODO make this implement parcelable
  *
  * Created by mihai on 5/24/15.
  */
-public class Card {
+public class Card implements Serializable {
     private String id;
 
     private String name;
@@ -30,10 +33,6 @@ public class Card {
 
     public String getDescription() {
         return desc;
-    }
-
-    public void setDescription(String description) {
-        this.desc = description;
     }
 
 }

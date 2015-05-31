@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.SolaDroidActivity;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.trello.api.model.Card;
+import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
@@ -21,8 +24,6 @@ import java.util.List;
 
 /**
  *  Displays the Trello task cards for each of the to do, doing and done lists.
- *
- *  TODO debug and see why the recycler view is not working correctly.
  */
 public class TaskCardsFragment extends Fragment {
 
@@ -60,13 +61,31 @@ public class TaskCardsFragment extends Fragment {
     }
 
     /**
+     * @return true if the current task list in the fragment is the TO DO list.
+     */
+    private boolean isTodoList() {
+        return SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, getActivity()).equals(taskListId);
+    }
+
+    /**
      * Sets up the Trello task card recycler view.
      */
     private void setupTrelloCardList() {
         RecyclerView trelloCards = (RecyclerView) getView().findViewById(R.id.task_status_card_list);
         trelloCards.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        taskCardsAdapter = new TrelloTaskCardsAdapter();
+        if (isTodoList()) {
+            taskCardsAdapter = new TrelloTaskCardsAdapter(new TrelloTaskCardsAdapter.CardActionCallback() {
+                @Override
+                public void onCardTap(Card cardData) {
+                    Intent startTask = new Intent(getActivity(), SolaDroidActivity.class);
+                    startTask.putExtra(AppConstants.START_TASK_CARD_KEY, cardData);
+                    startActivity(startTask);
+                }
+            });
+        } else {
+            taskCardsAdapter = new TrelloTaskCardsAdapter(null);
+        }
         trelloCards.setAdapter(taskCardsAdapter);
 
         TrelloResultsManager resultsManager = TrelloResultsManager.getInstance();

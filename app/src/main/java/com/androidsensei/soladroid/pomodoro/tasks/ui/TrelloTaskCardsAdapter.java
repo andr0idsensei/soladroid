@@ -1,5 +1,6 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,12 +26,15 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
      */
     private List<Card> trelloCards;
 
+    private CardActionCallback cardActionCallback;
+
     /**
      * Creates an instance of this adapter, making sure that it is properly initialized.
      */
-    public TrelloTaskCardsAdapter() {
+    public TrelloTaskCardsAdapter(CardActionCallback cardActionCallback) {
         super();
         trelloCards = new ArrayList<>();
+        this.cardActionCallback = cardActionCallback;
     }
 
     @Override
@@ -43,9 +47,18 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Card card = trelloCards.get(position);
+        final Card card = trelloCards.get(position);
         viewHolder.cardName.setText(card.getName());
         viewHolder.cardDescription.setText(card.getDescription());
+
+        if (cardActionCallback != null) {
+            viewHolder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cardActionCallback.onCardTap(card);
+                }
+            });
+        }
     }
 
     @Override
@@ -69,15 +82,25 @@ public class TrelloTaskCardsAdapter extends RecyclerView.Adapter<TrelloTaskCards
      * View holder class for caching recycler view item views.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public CardView card;
+
         public TextView cardName;
 
         public TextView cardDescription;
 
         public ViewHolder(View card) {
             super(card);
+            this.card = (CardView) card;
             cardName = (TextView) card.findViewById(R.id.task_status_trello_card_name);
             cardDescription = (TextView) card.findViewById(R.id.task_status_trello_card_description);
         }
+    }
+
+    /**
+     * Callback interface for sending card view item tap events.
+     */
+    public interface CardActionCallback {
+        void onCardTap(Card cardData);
     }
 
 }
