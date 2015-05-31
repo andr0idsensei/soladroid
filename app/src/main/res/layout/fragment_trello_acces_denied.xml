@@ -14,8 +14,8 @@
         android:text="@string/trello_access_denied"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:textSize="20sp"/>
+        android:layout_marginTop="@dimen/space_7"
+        android:textSize="@dimen/text_headline"/>
 
     <Button
         android:id="@+id/trello_denied_ok_button"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/space_5"
         android:text="@string/ok"
         />
 

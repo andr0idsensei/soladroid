@@ -8,6 +8,9 @@
     <dimen name="space_2">4dp</dimen>
     <dimen name="space_3">8dp</dimen>
     <dimen name="space_4">16dp</dimen>
+    <dimen name="space_5">32dp</dimen>
+    <dimen name="space_6">64dp</dimen>
+    <dimen name="space_7">128dp</dimen>
 
     <!-- App font sizes -->
     <dimen name="text_body">14sp</dimen>
