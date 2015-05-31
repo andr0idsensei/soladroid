@@ -22,9 +22,9 @@ public interface SolaDroidFragmentContract {
     void showTimerFragment();
 
     /**
-     * Show the fragment for choosing the Trello tasks to work on.
+     * Show the fragment for choosing the Trello tasks to work on. - todo this is going to be an activity
      */
-    void showTasksFragment();
+    void showTaskStatusActivity();
 
     /**
      * In case the user decides to deny Trello access for SolaDroid, we should notify her.

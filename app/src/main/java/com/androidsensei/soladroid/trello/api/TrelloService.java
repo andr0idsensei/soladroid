@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.trello.api;
 
 import com.androidsensei.soladroid.trello.api.model.Board;
+import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 
@@ -49,4 +50,14 @@ public interface TrelloService {
      */
     @GET("/boards/{boardId}/lists?cards=open")
     List<TrelloList> loadTaskListsForBoard(@Path("boardId") String boardId, @Query("key") String appKey, @Query("token") String appToken);
+
+    /**
+     * Returns the list of Trello cards that belong to a given task list.
+     * @param listId the task list id
+     * @param appKey the application key
+     * @param appToken the application token
+     * @return the above mentioned list of cards.
+     */
+    @GET("/lists/{listId}/cards?filter=open")
+    List<Card> loadTrelloCardsForList(@Path("listId") String listId, @Query("key") String appKey, @Query("token") String appToken);
 }

@@ -1,15 +1,16 @@
 package com.androidsensei.soladroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidsensei.soladroid.pomodoro.tasks.ui.TasksFragment;
-import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
+import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
+import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -20,8 +21,8 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * the users.
  *
  * TODO polish the UI interface
- * TODO implement the Pomodoro timer screen
  * TODO add some error handling for Trello requests
+ * TODO update navigation between activities if needed - clean interfaces
  *
  * @author mihai
  */
@@ -35,7 +36,12 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
-            showTimerFragment();
+            Card card = (Card) getIntent().getSerializableExtra(AppConstants.START_TASK_CARD_KEY);
+            if (card != null) {
+                showTimerFragment();
+            } else {
+                showTaskStatusActivity();
+            }
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
@@ -57,12 +63,13 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showTimerFragment() {
-        replaceCurrentFragment(new TasksFragment());
+
     }
 
     @Override
-    public void showTasksFragment() {
-        replaceCurrentFragment(new PomodoroFragment());
+    public void showTaskStatusActivity() {
+        startActivity(new Intent(this, TaskStatusActivity.class));
+        finish();
     }
 
     @Override

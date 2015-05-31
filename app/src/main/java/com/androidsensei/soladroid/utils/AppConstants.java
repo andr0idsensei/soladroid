@@ -28,4 +28,9 @@ public final class AppConstants {
      * Key by which we refer the Trello id of the done task list mapped in SolaDroid.
      */
     public static String DONE_LIST_KEY = "done_list";
+
+    /**
+     * Key by which we refer the Trello task card which we intent to start working on.
+     */
+    public static String START_TASK_CARD_KEY = "start_task_card";
 }
