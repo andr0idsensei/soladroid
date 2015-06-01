@@ -34,13 +34,4 @@ public final class AppConstants {
      */
     public static final String ARG_START_TASK_CARD = "start_task_card";
 
-    /**
-     * The length of one Pomodoro (25 minutes) in milliseconds.
-     */
-    public static final long POMODORO_LENGTH = 1500000;
-
-    /**
-     * The tick of the Pomodoro timer in milliseconds.
-     */
-    public static final long POMODORO_COUNTER_TICK = 1000;
 }

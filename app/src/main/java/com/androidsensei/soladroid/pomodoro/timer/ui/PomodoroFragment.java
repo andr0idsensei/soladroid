@@ -2,9 +2,11 @@ package com.androidsensei.soladroid.pomodoro.timer.ui;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.trello.api.model.Card;
@@ -25,6 +27,12 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
     private CountDownTimer pomodoroTimer;
 
+    private TextView pomodoroCounter;
+
+    private TextView pomodoroTimerView;
+
+    private TextView pomodoroTotalTime;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,25 +43,26 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
-
+//        startPomodoroCounter(null, null, (TextView) getView().findViewById(R.id.timer_pomodoro_timer));
     }
 
     /**
      * 
      */
-    private void startPomodoroCounter() {
-        pomodoroTimer = new CountDownTimer(AppConstants.POMODORO_LENGTH, AppConstants.POMODORO_COUNTER_TICK) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();
-    }
+//    private void startPomodoroCounter(TextView pomodoroCounter, TextView timerTotal, final TextView timerView) {
+//        pomodoroTimer = new CountDownTimer(AppConstants.POMODORO_LENGTH, AppConstants.POMODORO_COUNTER_TICK) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                timerView.setText(DateUtils.formatElapsedTime(millisUntilFinished / 1000));
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//
+//            }
+//        }.start();
+//
+//    }
 
     public static PomodoroFragment createFragment(Card card) {
         PomodoroFragment fragment = new PomodoroFragment();
