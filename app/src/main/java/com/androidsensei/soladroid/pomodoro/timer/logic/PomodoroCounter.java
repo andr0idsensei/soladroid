@@ -125,6 +125,10 @@ public class PomodoroCounter {
         return remainingTime / MILLI_TO_SECOND_RATE;
     }
 
+    public boolean isPaused() {
+        return isPaused;
+    }
+
     /**
      * Callback interface for hooking up on the countdown timer's events.
      */

@@ -1,11 +1,11 @@
 package com.androidsensei.soladroid.pomodoro.timer.ui;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
@@ -42,17 +42,35 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
-        initViews();
+        initTextViews();
         startCountdownTimer();
+        initPomodoroRunningButtons();
     }
 
     /**
      * Initializes the views for the fragment.
      */
-    private void  initViews() {
+    private void initTextViews() {
         pomodoroCounter = (TextView) getView().findViewById(R.id.timer_pomodoro_counter);
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
         pomodoroTotalTime = (TextView) getView().findViewById(R.id.timer_pomodoro_total);
+    }
+
+    //TODO change the pause button text
+    //TODO set the stop button action or maybe do that in a separate method
+    private void initPomodoroRunningButtons() {
+        Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pomodoroTimer.isPaused()) {
+                    pomodoroTimer.start();
+                } else {
+                    pomodoroTimer.pause();
+                }
+            }
+        });
+
     }
 
     /**
