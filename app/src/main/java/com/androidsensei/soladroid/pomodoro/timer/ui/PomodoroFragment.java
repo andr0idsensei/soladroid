@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroCounter;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -23,9 +24,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
     private int pomodoroCount;
 
-    private String timeSpent;
-
-    private CountDownTimer pomodoroTimer;
+    private PomodoroCounter pomodoroTimer;
 
     private TextView pomodoroCounter;
 
@@ -43,27 +42,44 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
-//        startPomodoroCounter(null, null, (TextView) getView().findViewById(R.id.timer_pomodoro_timer));
+        initViews();
+        startCountdownTimer();
     }
 
     /**
-     * 
+     * Initializes the views for the fragment.
      */
-//    private void startPomodoroCounter(TextView pomodoroCounter, TextView timerTotal, final TextView timerView) {
-//        pomodoroTimer = new CountDownTimer(AppConstants.POMODORO_LENGTH, AppConstants.POMODORO_COUNTER_TICK) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                timerView.setText(DateUtils.formatElapsedTime(millisUntilFinished / 1000));
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//            }
-//        }.start();
-//
-//    }
+    private void  initViews() {
+        pomodoroCounter = (TextView) getView().findViewById(R.id.timer_pomodoro_counter);
+        pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
+        pomodoroTotalTime = (TextView) getView().findViewById(R.id.timer_pomodoro_total);
+    }
 
+    /**
+     * Creates and starts the Pomodoro countdown timer.
+     */
+    private void startCountdownTimer() {
+        pomodoroTimer = new PomodoroCounter(0, new PomodoroCounter.PomodoroCounterCallback() {
+            @Override
+            public void onTick(long secondsToNone) {
+                pomodoroTimerView.setText(DateUtils.formatElapsedTime(secondsToNone));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+
+        pomodoroTimer.start();
+    }
+
+    /**
+     * Factory method for creating pomodoro fragment instances.
+     *
+     * @param card the Trello card we're currently working on - passed in the Fragment arguments
+     * @return the PomodoroFragment instance created with arguments set
+     */
     public static PomodoroFragment createFragment(Card card) {
         PomodoroFragment fragment = new PomodoroFragment();
         Bundle args = new Bundle();

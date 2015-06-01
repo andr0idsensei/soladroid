@@ -35,43 +35,64 @@ public class PomodoroCounter {
     private static final long POMODORO_COUNTER_TICK = 1000;
 
     /**
-     * The number of seconds until the current Pomodoro ends.
+     * The number of milliseconds until the current Pomodoro ends.
      */
-    private long currentTimer;
+    private long remainingTime;
 
+    /**
+     * Is current Pomodoro paused?
+     */
     private boolean isPaused;
 
+    /**
+     * Internal count down timer to count time down.
+     */
     private CountDownTimer countDownTimer;
 
+    /**
+     * The implementation of the pomodoro counter callback interface.
+     */
     private PomodoroCounterCallback callback;
 
+    /**
+     * Constructor with a callback and the remaining time.
+     *
+     * @param currentTimer the remaining time of the Pomodoro we are currently keeping
+     * @param callback the callback to notify our callers of when ticks happen
+     */
     public PomodoroCounter(long currentTimer, PomodoroCounterCallback callback) {
         if (currentTimer == 0) {
-            this.currentTimer = POMODORO_LENGTH;
+            this.remainingTime = POMODORO_LENGTH;
         } else {
-            this.currentTimer = currentTimer;
+            this.remainingTime = currentTimer * MILLI_TO_SECOND_RATE;
         }
         this.callback = callback;
         this.countDownTimer = createCountDownTimer();
     }
 
+    /**
+     * @return an instance of CountDownTime to use as an internal time count down implementation.
+     */
     private CountDownTimer createCountDownTimer() {
-        return new CountDownTimer(currentTimer * MILLI_TO_SECOND_RATE, POMODORO_COUNTER_TICK) {
+        return new CountDownTimer(remainingTime, POMODORO_COUNTER_TICK) {
             @Override
             public void onTick(long millisUntilFinished) {
                 callback.onTick(millisUntilFinished / MILLI_TO_SECOND_RATE);
-                currentTimer = millisUntilFinished;
+                remainingTime = millisUntilFinished;
             }
 
             @Override
             public void onFinish() {
                 Log.d("r1k0", "countdown finished.");
                 callback.onFinish();
-                currentTimer = 0;
+                remainingTime = 0;
             }
         };
     }
 
+    /**
+     * Starts the Pomodoro timer and if it was paused before, it continues from where it left off.
+     */
     public void start() {
         if (isPaused) {
             countDownTimer = createCountDownTimer().start();
@@ -81,14 +102,27 @@ public class PomodoroCounter {
         isPaused = false;
     }
 
+    /**
+     * Pauses the current Pomodoro, allowing for continuation.
+     */
     public void pause() {
         isPaused = true;
         countDownTimer.cancel();
     }
 
+    /**
+     * Stops the current Pomodoro and resets the counter.
+     */
     public void stop() {
         isPaused = false;
         countDownTimer.cancel();
+    }
+
+    /**
+     * @return the remaining time to the end of the current Pomodoro in seconds.
+     */
+    public long getRemainingTime() {
+        return remainingTime / MILLI_TO_SECOND_RATE;
     }
 
     /**
