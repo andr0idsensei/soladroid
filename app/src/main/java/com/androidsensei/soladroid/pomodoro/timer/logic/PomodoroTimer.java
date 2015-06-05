@@ -1,7 +1,6 @@
 package com.androidsensei.soladroid.pomodoro.timer.logic;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 
 /**
  * Wrapper over Android's CountdownTimer which we use to manage the Pomodoro related operations.
