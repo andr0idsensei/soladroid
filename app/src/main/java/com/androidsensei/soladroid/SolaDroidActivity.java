@@ -29,9 +29,20 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  */
 public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFragmentContract {
 
+    private static final String AUTH_FRAGMENT_TAG = "auth_fragment";
+    private static final String SETUP_FRAGMENT_TAG = "setup_fragment";
+    private static final String POMODORO_FRAGMENT_TAG = "pomodoro_fragment";
+    private static final String ACCESS_DENIED_FRAGMENT_TAG = "access_denied_fragment";
+
+    private boolean configurationChanged;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            configurationChanged = true;
+        }
+
         setContentView(R.layout.activity_sola_droid);
 
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
@@ -54,18 +65,35 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showAuthFragment() {
-        replaceCurrentFragment(new TrelloAuthFragment());
+        if (configurationChanged) {
+            TrelloAuthFragment authFragment = (TrelloAuthFragment) getFragmentManager().findFragmentByTag(AUTH_FRAGMENT_TAG);
+            replaceCurrentFragment(authFragment, AUTH_FRAGMENT_TAG);
+        } else {
+            replaceCurrentFragment(new TrelloAuthFragment(), AUTH_FRAGMENT_TAG);
+        }
     }
 
     @Override
     public void showSetupFragment() {
-        replaceCurrentFragment(new TrelloSetupFragment());
+        if (configurationChanged) {
+            TrelloSetupFragment setupFragment = (TrelloSetupFragment) getFragmentManager().findFragmentByTag(SETUP_FRAGMENT_TAG);
+            replaceCurrentFragment(setupFragment, SETUP_FRAGMENT_TAG);
+        } else {
+            replaceCurrentFragment(new TrelloSetupFragment(), SETUP_FRAGMENT_TAG);
+        }
     }
 
     @Override
     public void showPomodoroFragment(Card card) {
-        PomodoroFragment pomodoroFragment = PomodoroFragment.createFragment(card);
-        replaceCurrentFragment(pomodoroFragment);
+        PomodoroFragment pomodoroFragment = null;
+
+        if (configurationChanged) {
+            pomodoroFragment = (PomodoroFragment) getFragmentManager().findFragmentByTag(POMODORO_FRAGMENT_TAG);
+        } else {
+            pomodoroFragment = PomodoroFragment.createFragment(card);
+        }
+
+        replaceCurrentFragment(pomodoroFragment, POMODORO_FRAGMENT_TAG);
     }
 
     @Override
@@ -76,7 +104,12 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
 
     @Override
     public void showAccessDeniedFragment() {
-        replaceCurrentFragment(new TrelloAccessDeniedFragment());
+        if (configurationChanged) {
+            TrelloAccessDeniedFragment accessDeniedFragment = (TrelloAccessDeniedFragment) getFragmentManager().findFragmentByTag(ACCESS_DENIED_FRAGMENT_TAG);
+            replaceCurrentFragment(accessDeniedFragment, ACCESS_DENIED_FRAGMENT_TAG);
+        } else {
+            replaceCurrentFragment(new TrelloAccessDeniedFragment(), ACCESS_DENIED_FRAGMENT_TAG);
+        }
     }
 
     /**
@@ -84,9 +117,9 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
      *
      * @param fragment the fragment which will replace the current one.
      */
-    private void replaceCurrentFragment(SolaDroidBaseFragment fragment) {
+    private void replaceCurrentFragment(SolaDroidBaseFragment fragment, String fragmentTag) {
         if (findViewById(R.id.fragment_container) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, fragmentTag).commit();
         }
     }
 

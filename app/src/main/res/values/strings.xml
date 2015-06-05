@@ -21,6 +21,8 @@
     <string name="timer_pomodoro_timer">25:00</string>
     <string name="timer_pomodoro_total">Time Spent: %1$s</string>
     <string name="timer_pomodoro_pause">Pause</string>
+    <string name="timer_pomodoro_resume">Resume</string>
+    <string name="timer_pomodoro_start">Start</string>
     <string name="timer_pomodoro_stop">Stop</string>
     <string name="timer_pomodoro_done">Done</string>
     <string name="timer_pomodoro_back">Back</string>

@@ -8,7 +8,7 @@ import android.util.Log;
  *
  * Created by mihai on 6/1/15.
  */
-public class PomodoroCounter {
+public class PomodoroTimer {
     /**
      * Conversion between from milliseconds to seconds.
      */
@@ -16,8 +16,9 @@ public class PomodoroCounter {
 
     /**
      * The length of one Pomodoro (25 minutes) in milliseconds.
+     * 1500000 ms = 25 minutes
      */
-    public static final long POMODORO_LENGTH = 1500000;
+    private static final long POMODORO_LENGTH = 25000;
 
     /**
      * The length of the short break (5 minutes) in milliseconds.
@@ -40,9 +41,19 @@ public class PomodoroCounter {
     private long remainingTime;
 
     /**
+     * The number of milliseconds since the current Pomodoro started.
+     */
+    private long elapsedTime;
+
+    /**
      * Is current Pomodoro paused?
      */
     private boolean isPaused;
+
+    /**
+     * Is current Pomodoro stopped?
+     */
+    private boolean isStopped;
 
     /**
      * Internal count down timer to count time down.
@@ -60,7 +71,7 @@ public class PomodoroCounter {
      * @param currentTimer the remaining time of the Pomodoro we are currently keeping
      * @param callback the callback to notify our callers of when ticks happen
      */
-    public PomodoroCounter(long currentTimer, PomodoroCounterCallback callback) {
+    public PomodoroTimer(long currentTimer, PomodoroCounterCallback callback) {
         if (currentTimer == 0) {
             this.remainingTime = POMODORO_LENGTH;
         } else {
@@ -79,6 +90,7 @@ public class PomodoroCounter {
             public void onTick(long millisUntilFinished) {
                 callback.onTick(millisUntilFinished / MILLI_TO_SECOND_RATE);
                 remainingTime = millisUntilFinished;
+                elapsedTime = POMODORO_LENGTH - remainingTime;
             }
 
             @Override
@@ -86,6 +98,7 @@ public class PomodoroCounter {
                 Log.d("r1k0", "countdown finished.");
                 callback.onFinish();
                 remainingTime = 0;
+                elapsedTime = POMODORO_LENGTH;
             }
         };
     }
@@ -94,12 +107,13 @@ public class PomodoroCounter {
      * Starts the Pomodoro timer and if it was paused before, it continues from where it left off.
      */
     public void start() {
-        if (isPaused) {
+        if (isPaused || isStopped) {
             countDownTimer = createCountDownTimer().start();
         } else {
             countDownTimer.start();
         }
         isPaused = false;
+        isStopped = false;
     }
 
     /**
@@ -107,6 +121,7 @@ public class PomodoroCounter {
      */
     public void pause() {
         isPaused = true;
+        isStopped = false;
         countDownTimer.cancel();
     }
 
@@ -115,18 +130,42 @@ public class PomodoroCounter {
      */
     public void stop() {
         isPaused = false;
+        isStopped = true;
+        remainingTime = POMODORO_LENGTH;
         countDownTimer.cancel();
+        callback.onStop(getElapsedTime());
     }
 
     /**
-     * @return the remaining time to the end of the current Pomodoro in seconds.
+     * @return the remaining time to the end of the current Pomodoro, in seconds.
      */
     public long getRemainingTime() {
         return remainingTime / MILLI_TO_SECOND_RATE;
     }
 
+    /**
+     * @return the elapsed time since the current Pomodoro started, in seconds.
+     */
+    public long getElapsedTime() {
+        return elapsedTime / MILLI_TO_SECOND_RATE;
+    }
+
+    /**
+     * @return true if the current Pomodoro timer is paused, false otherwise.
+     */
     public boolean isPaused() {
         return isPaused;
+    }
+
+    /**
+     * @return true if the current Pomodoro timer is stopped, false otherwise.
+     */
+    public boolean isStopped() {
+        return  isStopped;
+    }
+
+    public static long getPomodoroLengthInSeconds() {
+        return POMODORO_LENGTH / MILLI_TO_SECOND_RATE;
     }
 
     /**
@@ -140,6 +179,16 @@ public class PomodoroCounter {
          */
         void onTick(long secondsToNone);
 
+        /**
+         * Call this method when the internal count down timer finishes.
+         */
         void onFinish();
+
+        /**
+         * Call this method when the timer gets stoped.
+         *
+         * @param elapsedTime the number of seconds elapsed since the start of the current Pomodoro
+         */
+        void onStop(long elapsedTime);
     }
 }
