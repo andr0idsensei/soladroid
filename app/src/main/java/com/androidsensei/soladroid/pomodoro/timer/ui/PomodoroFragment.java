@@ -81,6 +81,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private TextView pomodoroTotalTime;
 
+    private View runningSection;
+
+    private View finishedSection;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -136,6 +140,21 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     }
 
     /**
+     * Toggles the finished and running sections of buttons based on their current state. They will become visible if
+     * they are invisible and viceversa.
+     */
+    private void toggleActionSections() {
+        runningSection = getView().findViewById(R.id.timer_pomodoro_running_section);
+        finishedSection = getView().findViewById(R.id.timer_pomodoro_finished_section);
+
+        boolean isRunningVisbile = runningSection.getVisibility() == View.VISIBLE;
+        boolean isFinishedVisible = finishedSection.getVisibility() == View.VISIBLE;
+
+        runningSection.setVisibility(isRunningVisbile ? View.INVISIBLE : View.VISIBLE);
+        finishedSection.setVisibility(isFinishedVisible ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    /**
      * Setup the pause/resume button.
      */
     private void setupPomodoroPauseButton() {
@@ -180,6 +199,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         });
     }
 
+
+
     /**
      * Creates and starts the Pomodoro countdown timer.
      */
@@ -203,6 +224,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                     pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + pomodoroCount));
                     pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
                     pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
+                    toggleActionSections();
                 }
             }
 
