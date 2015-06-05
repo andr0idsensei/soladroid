@@ -18,7 +18,6 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
  * TODO treat configuration changes when the timer is paused or stopped
- * TODO add what happens when the pomodoro is complete - show other buttons and do the actions
  * TODO save the time state for the task in Trello - maybe it would be a good idea to treat the timer as a singleton in
  * order to avoid keeping the same state in the fragment.
  * TODO handle the breaks
@@ -59,7 +58,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
      * The remaining time for the current task.
      */
-    private long remainingTime;
+    private Long remainingTime;
 
     /**
      * The Pomodoro count down timer used to determine the current state of the Pomodoro for the task at hand.
@@ -81,8 +80,14 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private TextView pomodoroTotalTime;
 
+    /**
+     * The button section for running the Pomodoro.
+     */
     private View runningSection;
 
+    /**
+     * The button section for when a Pomodoro is finished.
+     */
     private View finishedSection;
 
     @Override
@@ -97,8 +102,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         Log.d("r1k0", "onActivityCreated...");
         restoreInstanceState(savedInstanceState);
         trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
+        initCountdownTimer(PomodoroTimer.TimerType.POMODORO);
         initTextViews();
-        startCountdownTimer();
         setupPomodoroPauseButton();
         setupPomodoroStopButton();
     }
@@ -131,12 +136,19 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void initTextViews() {
         pomodoroCounter = (TextView) getView().findViewById(R.id.timer_pomodoro_counter);
-        pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
         pomodoroTotalTime = (TextView) getView().findViewById(R.id.timer_pomodoro_total);
 
         pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + pomodoroCount));
-        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(PomodoroTimer.getPomodoroLengthInSeconds()));
         pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
+        setTimerView();
+    }
+
+    /**
+     * Initializes the timer view.
+     */
+    private void setTimerView() {
+        pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
+        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getTimerLength()));
     }
 
     /**
@@ -183,10 +195,15 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     private void setupPomodoroStopButton() {
         final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
         final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
+
+        if (pomodoroTimer.isInitialized()) {
+            stop.setText(getResources().getText(R.string.timer_pomodoro_start));
+            pause.setEnabled(false);
+        }
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pomodoroTimer.isStopped()) {
+                if (pomodoroTimer.isStopped() || pomodoroTimer.isInitialized()) {
                     pomodoroTimer.start();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
                     pause.setEnabled(true);
@@ -199,14 +216,12 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         });
     }
 
-
-
     /**
-     * Creates and starts the Pomodoro countdown timer.
+     * Creates and initializes the Pomodoro countdown timer.
      */
-    private void startCountdownTimer() {
+    private void initCountdownTimer(PomodoroTimer.TimerType timerType) {
         Log.d("r1k0", "remainingTime: " + remainingTime);
-        pomodoroTimer = new PomodoroTimer(remainingTime, new PomodoroTimer.PomodoroCounterCallback() {
+        pomodoroTimer = new PomodoroTimer(remainingTime, timerType, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {
                 remainingTime = pomodoroTimer.getRemainingTime();
@@ -218,7 +233,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             @Override
             public void onFinish() {
                 totalTime = totalTime + pomodoroTimer.getElapsedTime();
-                remainingTime = 0;
+                remainingTime = null;
                 pomodoroCount++;
                 if (isAdded()) {
                     pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + pomodoroCount));
@@ -231,15 +246,13 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             @Override
             public void onStop(long elapsedTime) {
                 totalTime = totalTime + pomodoroTimer.getElapsedTime();
-                remainingTime = 0;
+                remainingTime = null;
                 if (isAdded()) {
                     pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
-                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(PomodoroTimer.getPomodoroLengthInSeconds()));
+                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getTimerLength()));
                 }
             }
         });
-
-        pomodoroTimer.start();
     }
 
     /**

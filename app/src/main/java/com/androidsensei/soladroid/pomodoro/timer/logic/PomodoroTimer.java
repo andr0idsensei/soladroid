@@ -23,12 +23,12 @@ public class PomodoroTimer {
     /**
      * The length of the short break (5 minutes) in milliseconds.
      */
-    public static final long SHORT_BREAK = 300000;
+    private static final long SHORT_BREAK = 300000;
 
     /**
      * The length of the long break (15 minutes) in milliseconds.
      */
-    public static final long LONG_BREAK = 900000;
+    private static final long LONG_BREAK = 900000;
 
     /**
      * The tick of the Pomodoro timer in milliseconds.
@@ -36,24 +36,29 @@ public class PomodoroTimer {
     private static final long POMODORO_COUNTER_TICK = 1000;
 
     /**
-     * The number of milliseconds until the current Pomodoro ends.
+     * The type of this Pomodoro timer - can be either pomodoro, short or long break.
+     */
+    private TimerType timerType;
+
+    /**
+     * The current state of this Pomodoro timer - can be initialized, paused, stopped or running.
+     */
+    private TimerState timerState;
+
+    /**
+     * The number of milliseconds until the current Pomodoro or break ends.
      */
     private long remainingTime;
 
     /**
-     * The number of milliseconds since the current Pomodoro started.
+     * The number of milliseconds since the current Pomodoro or break started.
      */
     private long elapsedTime;
 
     /**
-     * Is current Pomodoro paused?
+     * THe number of milliseconds with which this timer is started - is based on the TimerType value.
      */
-    private boolean isPaused;
-
-    /**
-     * Is current Pomodoro stopped?
-     */
-    private boolean isStopped;
+    private long initialTime;
 
     /**
      * Internal count down timer to count time down.
@@ -68,17 +73,38 @@ public class PomodoroTimer {
     /**
      * Constructor with a callback and the remaining time.
      *
-     * @param currentTimer the remaining time of the Pomodoro we are currently keeping
-     * @param callback the callback to notify our callers of when ticks happen
+     * @param remainingTime the remaining time, in seconds, of the Pomodoro or break we are currently keeping - if this
+     *                      is null, it means the timer gets started now.
+     * @param callback the callback to notify our callers of when ticks happen.
      */
-    public PomodoroTimer(long currentTimer, PomodoroCounterCallback callback) {
-        if (currentTimer == 0) {
-            this.remainingTime = POMODORO_LENGTH;
+    public PomodoroTimer(Long remainingTime, TimerType timerType, PomodoroCounterCallback callback) {
+        this.timerType = timerType;
+        if (remainingTime == null) {
+            switch (timerType) {
+                case POMODORO:
+                    this.initialTime = POMODORO_LENGTH;
+                    break;
+
+                case SHORT_BREAK:
+                    this.initialTime = SHORT_BREAK;
+                    break;
+
+                case LONG_BREAK:
+                    this.initialTime = LONG_BREAK;
+                    break;
+
+                default:
+                    break;
+            }
+
         } else {
-            this.remainingTime = currentTimer * MILLI_TO_SECOND_RATE;
+            this.initialTime = remainingTime * MILLI_TO_SECOND_RATE;
         }
+
+        this.remainingTime = initialTime;
         this.callback = callback;
         this.countDownTimer = createCountDownTimer();
+        timerState = TimerState.INITIALIZED;
     }
 
     /**
@@ -90,7 +116,7 @@ public class PomodoroTimer {
             public void onTick(long millisUntilFinished) {
                 callback.onTick(millisUntilFinished / MILLI_TO_SECOND_RATE);
                 remainingTime = millisUntilFinished;
-                elapsedTime = POMODORO_LENGTH - remainingTime;
+                elapsedTime = initialTime - remainingTime;
             }
 
             @Override
@@ -98,7 +124,7 @@ public class PomodoroTimer {
                 Log.d("r1k0", "countdown finished.");
                 callback.onFinish();
                 remainingTime = 0;
-                elapsedTime = POMODORO_LENGTH;
+                elapsedTime = initialTime;
             }
         };
     }
@@ -107,33 +133,35 @@ public class PomodoroTimer {
      * Starts the Pomodoro timer and if it was paused before, it continues from where it left off.
      */
     public void start() {
-        if (isPaused || isStopped) {
-            countDownTimer = createCountDownTimer().start();
-        } else {
+        if (isInitialized()) {
             countDownTimer.start();
+            timerState = TimerState.RUNNING;
+        } else if (isPaused() || isStopped()) {
+            countDownTimer = createCountDownTimer().start();
+            timerState = TimerState.RUNNING;
         }
-        isPaused = false;
-        isStopped = false;
     }
 
     /**
      * Pauses the current Pomodoro, allowing for continuation.
      */
     public void pause() {
-        isPaused = true;
-        isStopped = false;
-        countDownTimer.cancel();
+        if (isRunning()) {
+            timerState = TimerState.PAUSED;
+            countDownTimer.cancel();
+        }
     }
 
     /**
      * Stops the current Pomodoro and resets the counter.
      */
     public void stop() {
-        isPaused = false;
-        isStopped = true;
-        remainingTime = POMODORO_LENGTH;
-        countDownTimer.cancel();
-        callback.onStop(getElapsedTime());
+        if (isRunning()) {
+            remainingTime = POMODORO_LENGTH;
+            countDownTimer.cancel();
+            callback.onStop(getElapsedTime());
+            timerState = TimerState.STOPPED;
+        }
     }
 
     /**
@@ -154,18 +182,67 @@ public class PomodoroTimer {
      * @return true if the current Pomodoro timer is paused, false otherwise.
      */
     public boolean isPaused() {
-        return isPaused;
+        return timerState == TimerState.PAUSED;
     }
 
     /**
      * @return true if the current Pomodoro timer is stopped, false otherwise.
      */
     public boolean isStopped() {
-        return  isStopped;
+        return  timerState == TimerState.STOPPED;
     }
 
-    public static long getPomodoroLengthInSeconds() {
-        return POMODORO_LENGTH / MILLI_TO_SECOND_RATE;
+    /**
+     * @return true if the current Pomodoro timer is running, false otherwise.
+     */
+    public boolean isRunning() {
+        return timerState == TimerState.RUNNING;
+    }
+
+    /**
+     * @return true if the current timer state is initialized, false otherwise.
+     */
+    public  boolean isInitialized() {
+        return timerState == TimerState.INITIALIZED;
+    }
+
+    /**
+     * @return the number of initial seconds this timer has set.
+     */
+    public long getTimerLength() {
+        return initialTime / MILLI_TO_SECOND_RATE;
+    }
+
+    /**
+     * Enumeration of the possible types the Pomodoro timer should handle.
+     */
+    public enum TimerType {
+        POMODORO(1),
+        SHORT_BREAK(2),
+        LONG_BREAK(3);
+
+        private int value;
+
+        TimerType(int value) {
+            this.value = value;
+        }
+
+    }
+
+    /**
+     * Enumeration of the current timer's states.
+     */
+    private enum TimerState {
+        INITIALIZED(1),
+        PAUSED(2),
+        STOPPED(3),
+        RUNNING(4);
+
+        private int value;
+
+        TimerState(int value) {
+            this.value = value;
+        }
     }
 
     /**
