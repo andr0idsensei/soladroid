@@ -226,7 +226,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         pomodoroTimer = new PomodoroTimer(remainingTime, timerType, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {
-                remainingTime = pomodoroTimer.getRemainingTime();
+                remainingTime = secondsToNone;
                 if (isAdded()) {
                     pomodoroTimerView.setText(DateUtils.formatElapsedTime(secondsToNone));
                 }

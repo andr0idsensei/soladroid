@@ -164,13 +164,6 @@ public class PomodoroTimer {
     }
 
     /**
-     * @return the remaining time to the end of the current Pomodoro, in seconds.
-     */
-    public long getRemainingTime() {
-        return remainingTime / MILLI_TO_SECOND_RATE;
-    }
-
-    /**
      * @return the elapsed time since the current Pomodoro started, in seconds.
      */
     private long getElapsedTime() {
