@@ -17,7 +17,7 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO treat configuration changes when the timer is paused or stopped
+ * TODO treat configuration changes when the timer is paused, stopped or finished
  * TODO save the time state for the task in Trello - maybe it would be a good idea to treat the timer as a singleton in
  * order to avoid keeping the same state in the fragment.
  * TODO handle the breaks
@@ -111,8 +111,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (remainingTime != null) {
+            outState.putLong(REMAINING_TIME_KEY, remainingTime);
+        }
         outState.putInt(POMODORO_COUNT_KEY, pomodoroCount);
-        outState.putLong(REMAINING_TIME_KEY, remainingTime);
         outState.putLong(TOTAL_TIME_KEY, totalTime);
         outState.putSerializable(AppConstants.ARG_START_TASK_CARD, trelloCard);
     }
@@ -220,7 +222,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Creates and initializes the Pomodoro countdown timer.
      */
     private void initCountdownTimer(PomodoroTimer.TimerType timerType) {
-        Log.d("r1k0", "remainingTime: " + remainingTime);
+        Log.d("r1k0", "initCountdownTimer - remainingTime: " + remainingTime);
         pomodoroTimer = new PomodoroTimer(remainingTime, timerType, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {
@@ -231,8 +233,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             }
 
             @Override
-            public void onFinish() {
-                totalTime = totalTime + pomodoroTimer.getElapsedTime();
+            public void onFinish(long elapsedTime) {
+                totalTime = totalTime + elapsedTime;
                 remainingTime = null;
                 pomodoroCount++;
                 if (isAdded()) {
@@ -245,7 +247,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
             @Override
             public void onStop(long elapsedTime) {
-                totalTime = totalTime + pomodoroTimer.getElapsedTime();
+                totalTime = totalTime + elapsedTime;
                 remainingTime = null;
                 if (isAdded()) {
                     pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
