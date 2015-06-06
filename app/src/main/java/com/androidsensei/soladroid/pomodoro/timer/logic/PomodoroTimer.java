@@ -19,7 +19,7 @@ public class PomodoroTimer {
     private static final long POMODORO_COUNTER_TICK = 1000;
 
     /**
-     * The current state of this Pomodoro timer - can be initialized, paused, stopped or running.
+     * The current timeState of this Pomodoro timer - can be initialized, paused, stopped or running.
      */
     private TimerState timerState;
 
@@ -158,7 +158,7 @@ public class PomodoroTimer {
     }
 
     /**
-     * @return true if the current timer state is initialized, false otherwise.
+     * @return true if the current timer timeState is initialized, false otherwise.
      */
     public  boolean isInitialized() {
         return timerState == TimerState.INITIALIZED;

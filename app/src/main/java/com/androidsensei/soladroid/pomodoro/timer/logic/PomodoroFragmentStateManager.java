@@ -3,22 +3,22 @@ package com.androidsensei.soladroid.pomodoro.timer.logic;
 import com.androidsensei.soladroid.trello.api.model.Card;
 
 /**
- * Singleton class for managing the state of the Pomodoro fragment. It is better to use this approach since I may be able
- * to encapsulate some state specific logic in here and move it out of the fragment.
+ * Singleton class for managing the timeState of the Pomodoro fragment. It is better to use this approach since I may be able
+ * to encapsulate some timeState specific logic in here and move it out of the fragment.
  *
  * Created by mihai on 6/6/15.
  */
 public class PomodoroFragmentStateManager {
 
     /**
-     * The unique instance of the state manager.
+     * The unique instance of the timeState manager.
      */
     private static PomodoroFragmentStateManager instance;
 
     /**
-     * The state in which the fragment currently is - it can be that it is during a Pomodoro, a Short or a Long Break.
+     * The timeState in which the fragment currently is - it can be that it is during a Pomodoro, a Short or a Long Break.
      */
-    private PomodoroTimeState state;
+    private PomodoroTimeState timeState;
 
     /**
      * The Trello card object which contains the current task to work on.
@@ -36,7 +36,7 @@ public class PomodoroFragmentStateManager {
     private long totalTime;
 
     /**
-     * The Pomodoro count down timer used to determine the current state of the Pomodoro for the task at hand.
+     * The Pomodoro count down timer used to determine the current timeState of the Pomodoro for the task at hand.
      */
     private PomodoroTimer pomodoroTimer;
 
@@ -47,7 +47,7 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * The get instance method to return the unique instance of the state manager.
+     * The get instance method to return the unique instance of the timeState manager.
      *
      * @return the unique instance of this class
      */
@@ -60,10 +60,10 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * @return the current time state of the task - Pomodoro, Long or Short Break.
+     * @return the current time timeState of the task - Pomodoro, Long or Short Break.
      */
-    public PomodoroTimeState state() {
-        return state;
+    public PomodoroTimeState timeState() {
+        return timeState;
     }
 
     /**
@@ -110,12 +110,12 @@ public class PomodoroFragmentStateManager {
     /**
      * Initializes the timer with the given PomodoroTimeState wich can be a Pomodoro, a Short Break or a Long Break.
      *
-     * @param state the state which will tell the timer's initial time.
+     * @param state the timeState which will tell the timer's initial time.
      * @param callback the callback from the timer when various actions happen.
      * @return the initialized PomodoroTimer
      */
     public PomodoroTimer initTimer(boolean configChanged, PomodoroTimeState state, PomodoroTimer.PomodoroCounterCallback callback) {
-        this.state = state;
+        this.timeState = state;
         if (configChanged) {
             pomodoroTimer.resetCallback(callback);
         } else {

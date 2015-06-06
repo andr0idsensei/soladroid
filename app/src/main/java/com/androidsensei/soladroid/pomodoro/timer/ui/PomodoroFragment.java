@@ -24,12 +24,12 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
  */
 public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
-     * This fragment's state manager.
+     * This fragment's timeState manager.
      */
     private PomodoroFragmentStateManager stateManager;
 
     /**
-     * The Pomodoro count down timer used to determine the current state of the Pomodoro for the task at hand.
+     * The Pomodoro count down timer used to determine the current timeState of the Pomodoro for the task at hand.
      */
     private PomodoroTimer pomodoroTimer;
 
@@ -74,7 +74,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         if (savedInstanceState == null) {
             initCountdownTimer(PomodoroFragmentStateManager.PomodoroTimeState.POMODORO, false);
         } else {
-            initCountdownTimer(stateManager.state(), true);
+            initCountdownTimer(stateManager.timeState(), true);
         }
 
         initTextViews();
@@ -99,11 +99,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setTimerView() {
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
-        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.state().value()));
+        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.timeState().value()));
     }
 
     /**
-     * Toggles the finished and running sections of buttons based on their current state. They will become visible if
+     * Toggles the finished and running sections of buttons based on their current timeState. They will become visible if
      * they are invisible and viceversa.
      */
     private void toggleActionSections() {
