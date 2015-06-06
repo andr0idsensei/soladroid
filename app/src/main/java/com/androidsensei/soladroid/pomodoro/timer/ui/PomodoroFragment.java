@@ -80,6 +80,9 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         initTextViews();
         setupPomodoroPauseButton();
         setupPomodoroStopButton();
+        if (stateManager.pomodoroFinished() || stateManager.breakFinished()) {
+            toggleActionSections();
+        }
     }
 
     /**

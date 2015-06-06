@@ -108,7 +108,21 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * Initializes the timer with the given CountdownTime wich can be a Pomodoro, a Short Break or a Long Break.
+     * @return true if the current Pomodoro countdown is finished, false otherwise.
+     */
+    public boolean pomodoroFinished() {
+        return pomodoroTimer.isFinished() && countdownTime == CountdownTime.POMODORO;
+    }
+
+    /**
+     * @return true if the current Long or Short break countdown is finished, false otherwise.
+     */
+    public boolean breakFinished() {
+        return pomodoroTimer.isFinished() && countdownTime != CountdownTime.POMODORO;
+    }
+
+    /**
+     * Initializes the timer with the given CountdownTime which can be a Pomodoro, a Short Break or a Long Break.
      *
      * @param state the countdownTime which will tell the timer's initial time.
      * @param callback the callback from the timer when various actions happen.

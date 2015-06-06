@@ -78,6 +78,7 @@ public class PomodoroTimer {
 
             @Override
             public void onFinish() {
+                timerState = TimerState.FINISHED;
                 remainingTime = 0;
                 elapsedTime = initialTime;
                 callback.onFinish(getElapsedTime());
@@ -165,13 +166,21 @@ public class PomodoroTimer {
     }
 
     /**
+     * @return true if the current timer is finished, false otherwise.
+     */
+    public boolean isFinished() {
+        return timerState == TimerState.FINISHED;
+    }
+
+    /**
      * Enumeration of the current timer's states.
      */
     private enum TimerState {
         INITIALIZED(1),
         PAUSED(2),
         STOPPED(3),
-        RUNNING(4);
+        RUNNING(4),
+        FINISHED(5);
 
         private int value;
 
