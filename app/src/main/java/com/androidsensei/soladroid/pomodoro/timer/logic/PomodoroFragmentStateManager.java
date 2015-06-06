@@ -59,14 +59,16 @@ public class PomodoroFragmentStateManager {
         return instance;
     }
 
-    public PomodoroTimer pomodoroTimer() {
-        return pomodoroTimer;
-    }
-
+    /**
+     * @return the current time state of the task - Pomodoro, Long or Short Break.
+     */
     public PomodoroTimeState state() {
         return state;
     }
 
+    /**
+     * @return the Trello Card (current task) we're working on.
+     */
     public Card trelloCard() {
         return trelloCard;
     }
@@ -75,14 +77,23 @@ public class PomodoroFragmentStateManager {
         this.trelloCard = trelloCard;
     }
 
+    /**
+     * @return the task's current Pomodoro count.
+     */
     public int pomodoroCount() {
         return pomodoroCount;
     }
 
+    /**
+     * Increments the number of Pomodoros on the current task (Trello Card).
+     */
     public void incrementPomodoroCount() {
         pomodoroCount++;
     }
 
+    /**
+     * @return the current total time for the task.
+     */
     public long totalTime() {
         return totalTime;
     }
