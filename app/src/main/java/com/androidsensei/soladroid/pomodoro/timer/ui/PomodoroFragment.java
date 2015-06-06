@@ -2,7 +2,6 @@ package com.androidsensei.soladroid.pomodoro.timer.ui;
 
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroFragmentStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
@@ -17,48 +17,16 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO treat configuration changes when the timer is paused, stopped or finished
- * TODO save the time state for the task in Trello - maybe it would be a good idea to treat the timer as a singleton in
- * order to avoid keeping the same state in the fragment.
+ * TODO manage sections and button states
  * TODO handle the breaks
- *
+ * <p/>
  * Created by mihai on 5/29/15.
  */
 public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
-     * Bundle key to refer the Pomodoro count.
+     * This fragment's state manager.
      */
-    private static final String POMODORO_COUNT_KEY = "pomodoro_count";
-
-    /**
-     * Bundle key to refer the remaining time.
-     */
-    private static final String REMAINING_TIME_KEY = "remaining_time";
-
-    /**
-     * Bundle key to refer the total time.
-     */
-    private static final String TOTAL_TIME_KEY = "total_time";
-
-    /**
-     * The Trello card object which contains the current task to work on.
-     */
-    private Card trelloCard;
-
-    /**
-     * The number of Pomodoros spent on the current task.
-     */
-    private int pomodoroCount;
-
-    /**
-     * The total time spent on the current task.
-     */
-    private long totalTime;
-
-    /**
-     * The remaining time for the current task.
-     */
-    private Long remainingTime;
+    private PomodoroFragmentStateManager stateManager;
 
     /**
      * The Pomodoro count down timer used to determine the current state of the Pomodoro for the task at hand.
@@ -99,38 +67,19 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("r1k0", "onActivityCreated...");
-        restoreInstanceState(savedInstanceState);
-        trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
-        initCountdownTimer(PomodoroTimer.TimerType.POMODORO);
+        Card trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
+
+        stateManager = PomodoroFragmentStateManager.getInstance();
+        stateManager.setTrelloCard(trelloCard);
+        if (savedInstanceState == null) {
+            initCountdownTimer(PomodoroFragmentStateManager.PomodoroTimeState.POMODORO, false);
+        } else {
+            initCountdownTimer(stateManager.state(), true);
+        }
+
         initTextViews();
         setupPomodoroPauseButton();
         setupPomodoroStopButton();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (remainingTime != null) {
-            outState.putLong(REMAINING_TIME_KEY, remainingTime);
-        }
-        outState.putInt(POMODORO_COUNT_KEY, pomodoroCount);
-        outState.putLong(TOTAL_TIME_KEY, totalTime);
-        outState.putSerializable(AppConstants.ARG_START_TASK_CARD, trelloCard);
-    }
-
-    /**
-     * Reads the saved data from the savedInstanceState Bundle to restore the views at their previous state.
-     *
-     * @param savedInstanceState the bundle object containing state that needs to be preserved
-     */
-    private void restoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            pomodoroCount = savedInstanceState.getInt(POMODORO_COUNT_KEY);
-            remainingTime = savedInstanceState.getLong(REMAINING_TIME_KEY);
-            totalTime = savedInstanceState.getLong(TOTAL_TIME_KEY);
-            trelloCard = (Card) savedInstanceState.getSerializable(AppConstants.ARG_START_TASK_CARD);
-        }
     }
 
     /**
@@ -140,8 +89,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         pomodoroCounter = (TextView) getView().findViewById(R.id.timer_pomodoro_counter);
         pomodoroTotalTime = (TextView) getView().findViewById(R.id.timer_pomodoro_total);
 
-        pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + pomodoroCount));
-        pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
+        pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
+        pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
         setTimerView();
     }
 
@@ -150,7 +99,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setTimerView() {
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
-        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getTimerLength()));
+        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.state().value()));
     }
 
     /**
@@ -221,12 +170,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
      * Creates and initializes the Pomodoro countdown timer.
      */
-    private void initCountdownTimer(PomodoroTimer.TimerType timerType) {
-        Log.d("r1k0", "initCountdownTimer - remainingTime: " + remainingTime);
-        pomodoroTimer = new PomodoroTimer(remainingTime, timerType, new PomodoroTimer.PomodoroCounterCallback() {
+    private void initCountdownTimer(final PomodoroFragmentStateManager.PomodoroTimeState state, boolean configChanged) {
+        pomodoroTimer = stateManager.initTimer(configChanged, state, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {
-                remainingTime = secondsToNone;
                 if (isAdded()) {
                     pomodoroTimerView.setText(DateUtils.formatElapsedTime(secondsToNone));
                 }
@@ -234,12 +181,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
             @Override
             public void onFinish(long elapsedTime) {
-                totalTime = totalTime + elapsedTime;
-                remainingTime = null;
-                pomodoroCount++;
+                stateManager.incrementTotalTime(elapsedTime);
+                stateManager.incrementPomodoroCount();
                 if (isAdded()) {
-                    pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + pomodoroCount));
-                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
+                    pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
+                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
                     pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
                     toggleActionSections();
                 }
@@ -247,11 +193,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
             @Override
             public void onStop(long elapsedTime) {
-                totalTime = totalTime + elapsedTime;
-                remainingTime = null;
+                stateManager.incrementTotalTime(elapsedTime);
                 if (isAdded()) {
-                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(totalTime)));
-                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getTimerLength()));
+                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
+                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(state.value()));
                 }
             }
         });

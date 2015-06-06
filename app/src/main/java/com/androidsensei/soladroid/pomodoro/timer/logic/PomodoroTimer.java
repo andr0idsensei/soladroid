@@ -14,30 +14,9 @@ public class PomodoroTimer {
     private static final long MILLI_TO_SECOND_RATE = 1000;
 
     /**
-     * The length of one Pomodoro (25 minutes) in milliseconds.
-     * 1500000 ms = 25 minutes
-     */
-    private static final long POMODORO_LENGTH = 25000;
-
-    /**
-     * The length of the short break (5 minutes) in milliseconds.
-     */
-    private static final long SHORT_BREAK = 300000;
-
-    /**
-     * The length of the long break (15 minutes) in milliseconds.
-     */
-    private static final long LONG_BREAK = 900000;
-
-    /**
      * The tick of the Pomodoro timer in milliseconds.
      */
     private static final long POMODORO_COUNTER_TICK = 1000;
-
-    /**
-     * The type of this Pomodoro timer - can be either pomodoro, short or long break.
-     */
-    private TimerType timerType;
 
     /**
      * The current state of this Pomodoro timer - can be initialized, paused, stopped or running.
@@ -72,35 +51,13 @@ public class PomodoroTimer {
     /**
      * Constructor with a callback and the remaining time.
      *
-     * @param remainingTime the remaining time, in seconds, of the Pomodoro or break we are currently keeping - if this
+     * @param initialTime the initial time, in seconds, of the Pomodoro or break we are currently keeping - if this
      *                      is null, it means the timer gets started now.
      * @param callback the callback to notify our callers of when ticks happen.
      */
-    public PomodoroTimer(Long remainingTime, TimerType timerType, PomodoroCounterCallback callback) {
-        this.timerType = timerType;
-        if (remainingTime == null) {
-            switch (timerType) {
-                case POMODORO:
-                    this.initialTime = POMODORO_LENGTH;
-                    break;
-
-                case SHORT_BREAK:
-                    this.initialTime = SHORT_BREAK;
-                    break;
-
-                case LONG_BREAK:
-                    this.initialTime = LONG_BREAK;
-                    break;
-
-                default:
-                    break;
-            }
-
-        } else {
-            this.initialTime = remainingTime * MILLI_TO_SECOND_RATE;
-        }
-
-        this.remainingTime = initialTime;
+    public PomodoroTimer(int initialTime, PomodoroCounterCallback callback) {
+        this.initialTime = initialTime * MILLI_TO_SECOND_RATE;
+        this.remainingTime = this.initialTime;
         this.callback = callback;
         this.countDownTimer = createCountDownTimer();
         timerState = TimerState.INITIALIZED;
@@ -111,6 +68,7 @@ public class PomodoroTimer {
      */
     private CountDownTimer createCountDownTimer() {
         return new CountDownTimer(remainingTime, POMODORO_COUNTER_TICK) {
+            //TODO seems like Android's countdown timer skips the last tick - I should address that issue.
             @Override
             public void onTick(long millisUntilFinished) {
                 callback.onTick(millisUntilFinished / MILLI_TO_SECOND_RATE);
@@ -163,6 +121,15 @@ public class PomodoroTimer {
     }
 
     /**
+     * Resets the current timer's callback - this is useful for runtime configuration changes.
+     *
+     * @param callback the new callback to use.
+     */
+    public void resetCallback(PomodoroCounterCallback callback) {
+        this.callback = callback;
+    }
+
+    /**
      * @return the elapsed time since the current Pomodoro started, in seconds.
      */
     private long getElapsedTime() {
@@ -195,29 +162,6 @@ public class PomodoroTimer {
      */
     public  boolean isInitialized() {
         return timerState == TimerState.INITIALIZED;
-    }
-
-    /**
-     * @return the number of initial seconds this timer has set.
-     */
-    public long getTimerLength() {
-        return initialTime / MILLI_TO_SECOND_RATE;
-    }
-
-    /**
-     * Enumeration of the possible types the Pomodoro timer should handle.
-     */
-    public enum TimerType {
-        POMODORO(1),
-        SHORT_BREAK(2),
-        LONG_BREAK(3);
-
-        private int value;
-
-        TimerType(int value) {
-            this.value = value;
-        }
-
     }
 
     /**
