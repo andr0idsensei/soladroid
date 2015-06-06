@@ -138,6 +138,13 @@ public class PomodoroTimer {
     }
 
     /**
+     * @return the remaining time of the current countdown timer, in seconds.
+     */
+    public long getRemainingTime() {
+        return remainingTime / MILLI_TO_SECOND_RATE;
+    }
+
+    /**
      * @return true if the current Pomodoro timer is paused, false otherwise.
      */
     public boolean isPaused() {

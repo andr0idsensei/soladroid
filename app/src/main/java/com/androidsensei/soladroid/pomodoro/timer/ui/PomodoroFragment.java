@@ -19,6 +19,8 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
  * This fragment displays the Pomodoro timer and the current task we're working on.
  * TODO manage sections and button states
  * TODO handle the breaks
+ * TODO persist the Trello Card data
+ * TODO think about how to include both action sections...
  * <p/>
  * Created by mihai on 5/29/15.
  */
@@ -102,7 +104,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setTimerView() {
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
-        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.countdownTime().value()));
+        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getRemainingTime()));
     }
 
     /**
