@@ -17,7 +17,6 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO manage sections and button states
  * TODO handle the breaks
  * TODO persist the Trello Card data
  * TODO think about how to include both action sections...
@@ -77,14 +76,15 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
         } else {
             initCountdownTimer(stateManager.countdownTime(), true);
+            setTimerButtonsState();
+            if (stateManager.pomodoroFinished() || stateManager.breakFinished()) {
+                toggleActionSections();
+            }
         }
 
         initTextViews();
         setupPomodoroPauseButton();
         setupPomodoroStopButton();
-        if (stateManager.pomodoroFinished() || stateManager.breakFinished()) {
-            toggleActionSections();
-        }
     }
 
     /**
@@ -142,7 +142,21 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 }
             }
         });
+    }
 
+    /**
+     * Preserve the state of the timer action buttons after a configuration change.
+     */
+    private void setTimerButtonsState() {
+        final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
+        final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
+        if (pomodoroTimer.isPaused()) {
+            pause.setText(getResources().getText(R.string.timer_pomodoro_resume));
+            stop.setEnabled(false);
+        } else if (pomodoroTimer.isStopped()) {
+            stop.setText(getResources().getText(R.string.timer_pomodoro_start));
+            pause.setEnabled(false);
+        }
     }
 
     /**
