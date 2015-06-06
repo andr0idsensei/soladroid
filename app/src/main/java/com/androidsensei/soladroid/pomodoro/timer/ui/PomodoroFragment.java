@@ -24,12 +24,12 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
  */
 public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
-     * This fragment's timeState manager.
+     * This fragment's countdownTime manager.
      */
     private PomodoroFragmentStateManager stateManager;
 
     /**
-     * The Pomodoro count down timer used to determine the current timeState of the Pomodoro for the task at hand.
+     * The Pomodoro count down timer used to determine the current countdownTime of the Pomodoro for the task at hand.
      */
     private PomodoroTimer pomodoroTimer;
 
@@ -72,9 +72,9 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         stateManager = PomodoroFragmentStateManager.getInstance();
         stateManager.setTrelloCard(trelloCard);
         if (savedInstanceState == null) {
-            initCountdownTimer(PomodoroFragmentStateManager.PomodoroTimeState.POMODORO, false);
+            initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
         } else {
-            initCountdownTimer(stateManager.timeState(), true);
+            initCountdownTimer(stateManager.countdownTime(), true);
         }
 
         initTextViews();
@@ -99,11 +99,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setTimerView() {
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
-        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.timeState().value()));
+        pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(stateManager.countdownTime().value()));
     }
 
     /**
-     * Toggles the finished and running sections of buttons based on their current timeState. They will become visible if
+     * Toggles the finished and running sections of buttons based on their current countdownTime. They will become visible if
      * they are invisible and viceversa.
      */
     private void toggleActionSections() {
@@ -170,7 +170,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
      * Creates and initializes the Pomodoro countdown timer.
      */
-    private void initCountdownTimer(final PomodoroFragmentStateManager.PomodoroTimeState state, boolean configChanged) {
+    private void initCountdownTimer(final PomodoroFragmentStateManager.CountdownTime state, boolean configChanged) {
         pomodoroTimer = stateManager.initTimer(configChanged, state, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {

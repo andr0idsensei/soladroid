@@ -3,22 +3,22 @@ package com.androidsensei.soladroid.pomodoro.timer.logic;
 import com.androidsensei.soladroid.trello.api.model.Card;
 
 /**
- * Singleton class for managing the timeState of the Pomodoro fragment. It is better to use this approach since I may be able
- * to encapsulate some timeState specific logic in here and move it out of the fragment.
+ * Singleton class for managing the countdownTime of the Pomodoro fragment. It is better to use this approach since I may be able
+ * to encapsulate some countdownTime specific logic in here and move it out of the fragment.
  *
  * Created by mihai on 6/6/15.
  */
 public class PomodoroFragmentStateManager {
 
     /**
-     * The unique instance of the timeState manager.
+     * The unique instance of the countdownTime manager.
      */
     private static PomodoroFragmentStateManager instance;
 
     /**
-     * The timeState in which the fragment currently is - it can be that it is during a Pomodoro, a Short or a Long Break.
+     * The countdownTime value for the current timer - it can be that of a Pomodoro, a Short or a Long Break.
      */
-    private PomodoroTimeState timeState;
+    private CountdownTime countdownTime;
 
     /**
      * The Trello card object which contains the current task to work on.
@@ -36,7 +36,7 @@ public class PomodoroFragmentStateManager {
     private long totalTime;
 
     /**
-     * The Pomodoro count down timer used to determine the current timeState of the Pomodoro for the task at hand.
+     * The Pomodoro count down timer used to determine the current countdownTime of the Pomodoro for the task at hand.
      */
     private PomodoroTimer pomodoroTimer;
 
@@ -47,7 +47,7 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * The get instance method to return the unique instance of the timeState manager.
+     * The get instance method to return the unique instance of the countdownTime manager.
      *
      * @return the unique instance of this class
      */
@@ -60,10 +60,10 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * @return the current time timeState of the task - Pomodoro, Long or Short Break.
+     * @return the current time countdownTime of the task - Pomodoro, Long or Short Break.
      */
-    public PomodoroTimeState timeState() {
-        return timeState;
+    public CountdownTime countdownTime() {
+        return countdownTime;
     }
 
     /**
@@ -108,14 +108,14 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * Initializes the timer with the given PomodoroTimeState wich can be a Pomodoro, a Short Break or a Long Break.
+     * Initializes the timer with the given CountdownTime wich can be a Pomodoro, a Short Break or a Long Break.
      *
-     * @param state the timeState which will tell the timer's initial time.
+     * @param state the countdownTime which will tell the timer's initial time.
      * @param callback the callback from the timer when various actions happen.
      * @return the initialized PomodoroTimer
      */
-    public PomodoroTimer initTimer(boolean configChanged, PomodoroTimeState state, PomodoroTimer.PomodoroCounterCallback callback) {
-        this.timeState = state;
+    public PomodoroTimer initTimer(boolean configChanged, CountdownTime state, PomodoroTimer.PomodoroCounterCallback callback) {
+        this.countdownTime = state;
         if (configChanged) {
             pomodoroTimer.resetCallback(callback);
         } else {
@@ -126,9 +126,9 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
-     * Enumeration of the possible types the Pomodoro timer should handle.
+     * Enumeration of the possible countdown times we could handle.
      */
-    public enum PomodoroTimeState {
+    public enum CountdownTime {
         /**
          * The Pomodoro time (25 minutes) in seconds is represented by this value.
          * //TODO set back the number of seconds to 1500
@@ -152,7 +152,7 @@ public class PomodoroFragmentStateManager {
          */
         private int value;
 
-        PomodoroTimeState(int value) {
+        CountdownTime(int value) {
             this.value = value;
         }
 
