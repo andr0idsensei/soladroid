@@ -50,6 +50,26 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private TextView pomodoroTotalTime;
 
+    /**
+     * The pause/resume button. This should be active only when a Pomodoro runs.
+     */
+    private Button pause;
+
+    /**
+     * The stop/start button. This should be active only when a Pomodoro runs.
+     */
+    private Button stop;
+
+    /**
+     * The short break button. This is active only when a Pomodoro is stopped or finished and if a long break is not already running.
+     */
+    private Button shortBreak;
+
+    /**
+     * The long break button. This is active only when a Pomodoro is stopped or finished and if a short break is not already running.
+     */
+    private Button longBreak;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,10 +91,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         }
 
         initTextViews();
-        setupPomodoroPauseButton();
-        setupPomodoroStopButton();
-        setupShortBreakButton();
-        setupLongBreakButton();
+        initButtons();
     }
 
     /**
@@ -90,6 +107,21 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     }
 
     /**
+     * Initializes the action buttons for countdown management of Pomodoros and breaks.
+     */
+    private void initButtons() {
+        pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
+        stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
+        shortBreak = (Button) getView().findViewById(R.id.timer_pomodoro_five);
+        longBreak = (Button) getView().findViewById(R.id.timer_pomodoro_fifteen);
+
+        setupPomodoroPauseButton();
+        setupPomodoroStopButton();
+        setupShortBreakButton();
+        setupLongBreakButton();
+    }
+
+    /**
      * Initializes the timer view.
      */
     private void setTimerView() {
@@ -101,12 +133,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Preserve the state of the timer action buttons after a configuration change.
      */
     private void setTimerButtonsState() {
-        final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
-        final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
         if (pomodoroTimer.isPaused()) {
             pause.setText(getResources().getText(R.string.timer_pomodoro_resume));
             stop.setEnabled(false);
-        } else if (pomodoroTimer.isStopped()) {
+        } else if (pomodoroTimer.isStopped() || pomodoroTimer.isFinished()) {
             stop.setText(getResources().getText(R.string.timer_pomodoro_start));
             pause.setEnabled(false);
         }
@@ -116,8 +146,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Setup the pause/resume button.
      */
     private void setupPomodoroPauseButton() {
-        final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
-        final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,15 +166,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Setup the start/stop button.
      */
     private void setupPomodoroStopButton() {
-        //TODO maybe it would be best to have the initial state as start
-        //TODO see how to handle changes from pomodoro to breaks and back... maybe show all the buttons at once
-        final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
-        final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
-
         if (pomodoroTimer.isInitialized()) {
             stop.setText(getResources().getText(R.string.timer_pomodoro_start));
             pause.setEnabled(false);
         }
+        
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,10 +178,14 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                     pomodoroTimer.start();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
                     pause.setEnabled(true);
+                    shortBreak.setEnabled(false);
+                    longBreak.setEnabled(false);
                 } else {
                     pomodoroTimer.stop();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_start));
                     pause.setEnabled(false);
+                    shortBreak.setEnabled(true);
+                    longBreak.setEnabled(true);
                 }
             }
         });
@@ -213,13 +241,23 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
             @Override
             public void onFinish(long elapsedTime) {
-                stateManager.incrementTotalTime(elapsedTime);
-                stateManager.incrementPomodoroCount();
+                if (stateManager.pomodoroFinished()) {
+                    stateManager.incrementTotalTime(elapsedTime);
+                    stateManager.incrementPomodoroCount();
+                    if (isAdded()) {
+                        pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
+                        pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
+                        shortBreak.setEnabled(true);
+                        longBreak.setEnabled(true);
+                    }
+                } else if (stateManager.breakFinished()) {
+                    if (isAdded()) {
+                        pause.setEnabled(true);
+                        stop.setEnabled(true);
+                    }
+                }
                 if (isAdded()) {
-                    pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
-                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
                     pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
-                    //TODO restore section state...
                 }
             }
 
