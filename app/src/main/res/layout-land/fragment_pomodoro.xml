@@ -74,30 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/timer_pomodoro_stop"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_4"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/timer_pomodoro_done"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/space_4"
-                    android:layout_weight="1"
-                    android:text="@string/timer_pomodoro_done"/>
-
-                <Button
-                    android:id="@+id/timer_pomodoro_back"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/timer_pomodoro_back"/>
+                    android:text="@string/timer_pomodoro_start"/>
 
             </LinearLayout>
 
@@ -121,6 +98,29 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/timer_pomodoro_fifteen"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/timer_pomodoro_done"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/space_4"
+                    android:layout_weight="1"
+                    android:text="@string/timer_pomodoro_done"/>
+
+                <Button
+                    android:id="@+id/timer_pomodoro_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/timer_pomodoro_back"/>
 
             </LinearLayout>
 
