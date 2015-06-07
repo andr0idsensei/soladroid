@@ -50,16 +50,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private TextView pomodoroTotalTime;
 
-    /**
-     * The button section for running the Pomodoro.
-     */
-    private View runningSection;
-
-    /**
-     * The button section for when a Pomodoro is finished.
-     */
-    private View finishedSection;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,9 +68,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         } else {
             initCountdownTimer(stateManager.countdownTime(), true);
             setTimerButtonsState();
-            if (stateManager.pomodoroFinished() || stateManager.breakFinished()) {
-                toggleActionSections();
-            }
         }
 
         initTextViews();
@@ -108,21 +95,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     private void setTimerView() {
         pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
         pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getRemainingTime()));
-    }
-
-    /**
-     * Toggles the finished and running sections of buttons based on their current countdownTime. They will become visible if
-     * they are invisible and viceversa.
-     */
-    private void toggleActionSections() {
-        runningSection = getView().findViewById(R.id.timer_pomodoro_running_section);
-        finishedSection = getView().findViewById(R.id.timer_pomodoro_finished_section);
-
-        boolean isRunningVisbile = runningSection.getVisibility() == View.VISIBLE;
-        boolean isFinishedVisible = finishedSection.getVisibility() == View.VISIBLE;
-
-        runningSection.setVisibility(isRunningVisbile ? View.INVISIBLE : View.VISIBLE);
-        finishedSection.setVisibility(isFinishedVisible ? View.INVISIBLE : View.VISIBLE);
     }
 
     /**
@@ -166,6 +138,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Setup the start/stop button.
      */
     private void setupPomodoroStopButton() {
+        //TODO maybe it would be best to have the initial state as start
+        //TODO see how to handle changes from pomodoro to breaks and back... maybe show all the buttons at once
         final Button stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
         final Button pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
 
@@ -245,7 +219,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                     pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
                     pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
                     pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
-                    toggleActionSections();
                     //TODO restore section state...
                 }
             }
