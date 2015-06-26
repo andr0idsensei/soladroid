@@ -12,6 +12,7 @@ import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroFragmentStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.model.Card;
+import com.androidsensei.soladroid.trello.api.service.TrelloApiService;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
@@ -138,6 +139,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         setupPomodoroStopButton();
         setupShortBreakButton();
         setupLongBreakButton();
+        setupDoneButton();
     }
 
     /**
@@ -255,7 +257,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setupShortBreakButton() {
         final Button shortBreak = (Button) getView().findViewById(R.id.timer_pomodoro_five);
-        final Button longBreak = (Button) getView().findViewById(R.id.timer_pomodoro_fifteen);
         shortBreak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,7 +274,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setupLongBreakButton() {
         final Button longBreak = (Button) getView().findViewById(R.id.timer_pomodoro_fifteen);
-        final Button shortBreak = (Button) getView().findViewById(R.id.timer_pomodoro_five);
         longBreak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,6 +282,22 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 toggleBreakButtons(false);
                 stop.setEnabled(false);
                 pomodoroTimer.start();
+            }
+        });
+    }
+
+    /**
+     * Sets up the done button.
+     */
+    private void setupDoneButton() {
+        Button done = (Button) getView().findViewById(R.id.timer_pomodoro_done);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pomodoroTimer.stop();
+                String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
+                        stateManager.totalTime());
+                TrelloApiService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
             }
         });
     }

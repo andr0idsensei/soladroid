@@ -7,7 +7,10 @@ import com.androidsensei.soladroid.trello.api.model.TrelloList;
 
 import java.util.List;
 
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -28,7 +31,8 @@ public interface TrelloService {
      * @return the above mentioned list of boards.
      */
     @GET("/members/{memberId}/boards?filter=open")
-    List<Board> loadOpenBoards(@Path("memberId") String memberId, @Query("key") String appKey, @Query("token") String appToken);
+    List<Board> loadOpenBoards(@Path("memberId") String memberId, @Query("key") String appKey,
+                               @Query("token") String appToken);
 
     /**
      * Returns the request auth token as well as the member id for a given application authorization token.
@@ -49,7 +53,8 @@ public interface TrelloService {
      * @return the above mentioned list of task lists.
      */
     @GET("/boards/{boardId}/lists?cards=open")
-    List<TrelloList> loadTaskListsForBoard(@Path("boardId") String boardId, @Query("key") String appKey, @Query("token") String appToken);
+    List<TrelloList> loadTaskListsForBoard(@Path("boardId") String boardId, @Query("key") String appKey,
+                                           @Query("token") String appToken);
 
     /**
      * Returns the list of Trello cards that belong to a given task list.
@@ -59,5 +64,16 @@ public interface TrelloService {
      * @return the above mentioned list of cards.
      */
     @GET("/lists/{listId}/cards?filter=open")
-    List<Card> loadTrelloCardsForList(@Path("listId") String listId, @Query("key") String appKey, @Query("token") String appToken);
+    List<Card> loadTrelloCardsForList(@Path("listId") String listId, @Query("key") String appKey,
+                                      @Query("token") String appToken);
+
+    /**
+     * Posts a comment containing a time stamp to the given card
+     *
+     * @param timeComment the time stamp text
+     */
+    @FormUrlEncoded
+    @POST("/cards/{cardId}/actions/comments")
+    Card addTimeComment(@Path("cardId") String cardId, @Field("text") String timeComment, @Field("key") String appKey,
+                        @Field("token") String appToken);
 }
