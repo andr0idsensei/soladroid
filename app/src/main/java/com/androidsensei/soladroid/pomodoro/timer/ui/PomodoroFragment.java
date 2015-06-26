@@ -19,7 +19,7 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
  * This fragment displays the Pomodoro timer and the current task we're working on.
  * TODO handle the done/back buttons
  * TODO persist the Trello Card data
- * <p/>
+ * TODO move started tasks to the "in progress" list
  * Created by mihai on 5/29/15.
  */
 public class PomodoroFragment extends SolaDroidBaseFragment {
@@ -170,11 +170,9 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void restoreBreakButtonsState() {
         if (pomodoroTimer.isFinished() || pomodoroTimer.isInitialized() || pomodoroTimer.isStopped()) {
-            shortBreak.setEnabled(true);
-            longBreak.setEnabled(true);
+            toggleBreakButtons(true);
         } else {
-            shortBreak.setEnabled(false);
-            longBreak.setEnabled(false);
+            toggleBreakButtons(false);
         }
     }
 
@@ -203,7 +201,6 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setupStopButton() {
         if (pomodoroTimer.isFinished()) {
-            initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
             pause.setEnabled(false);
             stop.setEnabled(true);
             stop.setText(getText(R.string.timer_pomodoro_start));
@@ -223,21 +220,34 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pomodoroTimer.isStopped() || pomodoroTimer.isInitialized()) {
+                if (pomodoroTimer.isFinished()) {
+                    initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
+                    pomodoroTimer.start();
+                    stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
+                    toggleBreakButtons(false);
+                } else if (pomodoroTimer.isStopped() || pomodoroTimer.isInitialized()) {
                     pomodoroTimer.start();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
                     pause.setEnabled(true);
-                    shortBreak.setEnabled(false);
-                    longBreak.setEnabled(false);
+                    toggleBreakButtons(false);
                 } else {
                     pomodoroTimer.stop();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_start));
                     pause.setEnabled(false);
-                    shortBreak.setEnabled(true);
-                    longBreak.setEnabled(true);
+                    toggleBreakButtons(true);
                 }
             }
         });
+    }
+
+    /**
+     * Enables or disables the break buttons based on the given argument.
+     *
+     * @param enabled true or false
+     */
+    private void toggleBreakButtons(boolean enabled) {
+        shortBreak.setEnabled(enabled);
+        longBreak.setEnabled(enabled);
     }
 
     /**
@@ -251,8 +261,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             public void onClick(View v) {
                 initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.SHORT_BREAK, false);
                 setTimerView();
-                longBreak.setEnabled(false);
-                shortBreak.setEnabled(false);
+                toggleBreakButtons(false);
+                stop.setEnabled(false);
                 pomodoroTimer.start();
             }
         });
@@ -269,8 +279,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             public void onClick(View v) {
                 initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.LONG_BREAK, false);
                 setTimerView();
-                longBreak.setEnabled(false);
-                shortBreak.setEnabled(false);
+                toggleBreakButtons(false);
+                stop.setEnabled(false);
                 pomodoroTimer.start();
             }
         });
@@ -296,17 +306,15 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                     if (isAdded()) {
                         pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
                         pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
-                        shortBreak.setEnabled(true);
-                        longBreak.setEnabled(true);
-                        setupStopButton();
                     }
                 } else if (stateManager.breakFinished()) {
                     if (isAdded()) {
                         pause.setEnabled(true);
-                        stop.setEnabled(true);
                     }
                 }
                 if (isAdded()) {
+                    toggleBreakButtons(true);
+                    setupStopButton();
                     pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
                 }
             }
