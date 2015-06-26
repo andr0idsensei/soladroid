@@ -19,6 +19,8 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * activity to move to the next stage in the Trello setup process.
  * If access is not granted, it will notify the parent activity of that so it can take appropriate steps.
  *
+ * TODO - handle going back in the web view.
+ *
  * @author mihai
  */
 public class TrelloAuthFragment extends SolaDroidBaseFragment {

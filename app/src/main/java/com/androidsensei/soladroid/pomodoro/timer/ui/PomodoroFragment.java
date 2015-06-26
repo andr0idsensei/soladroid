@@ -17,10 +17,8 @@ import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO handle the state changes properly
  * TODO handle the done/back buttons
  * TODO persist the Trello Card data
- * TODO think about how to include both action sections...
  * <p/>
  * Created by mihai on 5/29/15.
  */
@@ -83,15 +81,36 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
 
         stateManager = PomodoroFragmentStateManager.getInstance();
         stateManager.setTrelloCard(trelloCard);
+
+        initTheTimer(savedInstanceState);
+        initTextViews();
+        initButtons();
+        restoreViewState(savedInstanceState);
+    }
+
+    /**
+     * Initializes the countdown timer when the fragment is started/restarted.
+     *
+     * @param savedInstanceState the saved instance state bundle.
+     */
+    private void initTheTimer(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
         } else {
             initCountdownTimer(stateManager.countdownTime(), true);
-            setTimerButtonsState();
         }
+    }
 
-        initTextViews();
-        initButtons();
+    /**
+     * Restores the state of the views after a configuration change.
+     *
+     * @param savedInstanceState the saved instance state
+     */
+    private void restoreViewState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            restoreTimerButtonsState();
+            restoreBreakButtonsState();
+        }
     }
 
     /**
@@ -132,13 +151,30 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
      * Preserve the state of the timer action buttons after a configuration change.
      */
-    private void setTimerButtonsState() {
+    private void restoreTimerButtonsState() {
         if (pomodoroTimer.isPaused()) {
-            pause.setText(getResources().getText(R.string.timer_pomodoro_resume));
+            pause.setText(getText(R.string.timer_pomodoro_resume));
+            stop.setText(getString(R.string.timer_pomodoro_stop));
             stop.setEnabled(false);
         } else if (pomodoroTimer.isStopped() || pomodoroTimer.isFinished()) {
-            stop.setText(getResources().getText(R.string.timer_pomodoro_start));
+            pause.setText(getText(R.string.timer_pomodoro_pause));
+            stop.setText(getText(R.string.timer_pomodoro_start));
             pause.setEnabled(false);
+        } else if (pomodoroTimer.isRunning()) {
+            stop.setText(getText(R.string.timer_pomodoro_stop));
+        }
+    }
+
+    /**
+     * Restore the state of the break buttons after a configuration change.
+     */
+    private void restoreBreakButtonsState() {
+        if (pomodoroTimer.isFinished() || pomodoroTimer.isInitialized() || pomodoroTimer.isStopped()) {
+            shortBreak.setEnabled(true);
+            longBreak.setEnabled(true);
+        } else {
+            shortBreak.setEnabled(false);
+            longBreak.setEnabled(false);
         }
     }
 
@@ -170,7 +206,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             stop.setText(getResources().getText(R.string.timer_pomodoro_start));
             pause.setEnabled(false);
         }
-        
+
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
