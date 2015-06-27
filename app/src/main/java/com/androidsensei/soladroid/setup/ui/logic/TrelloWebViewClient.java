@@ -5,11 +5,11 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.androidsensei.soladroid.SolaDroidFragmentContract;
+import com.androidsensei.soladroid.setup.ui.SolaDroidFragmentContract;
 
 /**
  * Web view client implementation which helps us hook into the Trello authorization process.
- *
+ * <p/>
  * Created by mihai on 5/16/15.
  */
 public class TrelloWebViewClient extends WebViewClient {

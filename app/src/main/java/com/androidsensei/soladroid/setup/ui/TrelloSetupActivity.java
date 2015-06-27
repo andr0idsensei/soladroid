@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid;
+package com.androidsensei.soladroid.setup.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,10 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
-import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
-import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
-import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -25,11 +23,10 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  *
  * @author mihai
  */
-public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFragmentContract {
+public class TrelloSetupActivity extends ActionBarActivity implements SolaDroidFragmentContract {
 
     private static final String AUTH_FRAGMENT_TAG = "auth_fragment";
     private static final String SETUP_FRAGMENT_TAG = "setup_fragment";
-    private static final String POMODORO_FRAGMENT_TAG = "pomodoro_fragment";
     private static final String ACCESS_DENIED_FRAGMENT_TAG = "access_denied_fragment";
 
     private boolean configurationChanged;

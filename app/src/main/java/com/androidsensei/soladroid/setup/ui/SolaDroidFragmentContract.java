@@ -1,8 +1,8 @@
-package com.androidsensei.soladroid;
+package com.androidsensei.soladroid.setup.ui;
 
 /**
- * This interface provides the contract for navigating between fragments in the SolaDroidActivity.
- *
+ * This interface provides the contract for navigating between fragments in the TrelloSetupActivity.
+ * <p/>
  * Created by mihai on 5/22/15.
  */
 public interface SolaDroidFragmentContract {

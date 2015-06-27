@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.androidsensei.soladroid.SolaDroidFragmentContract;
+import com.androidsensei.soladroid.setup.ui.SolaDroidFragmentContract;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
