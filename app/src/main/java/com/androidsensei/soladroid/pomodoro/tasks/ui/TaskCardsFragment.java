@@ -1,7 +1,6 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.SolaDroidActivity;
+import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroActivity;
+import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
-import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
@@ -78,9 +77,7 @@ public class TaskCardsFragment extends Fragment {
             taskCardsAdapter = new TrelloTaskCardsAdapter(new TrelloTaskCardsAdapter.CardActionCallback() {
                 @Override
                 public void onCardTap(Card cardData) {
-                    Intent startTask = new Intent(getActivity(), SolaDroidActivity.class);
-                    startTask.putExtra(AppConstants.START_TASK_CARD_KEY, cardData);
-                    startActivity(startTask);
+                    startActivity(PomodoroActivity.getPomodoroActivityIntent(getActivity(), cardData));
                 }
             });
         } else {
@@ -143,7 +140,7 @@ public class TaskCardsFragment extends Fragment {
         @Override
         protected List<Card> doInBackground(String... params) {
             listId = params[0];
-            TrelloService service = TrelloServiceFactory.createService();
+            TrelloApiService service = TrelloServiceFactory.createService();
 
             return service.loadTrelloCardsForList(listId, TrelloConstants.TRELLO_APP_KEY, params[1]);
         }

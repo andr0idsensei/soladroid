@@ -3,11 +3,11 @@ package com.androidsensei.soladroid.utils;
 import android.app.Activity;
 import android.app.Fragment;
 
-import com.androidsensei.soladroid.SolaDroidFragmentContract;
+import com.androidsensei.soladroid.setup.ui.SolaDroidFragmentContract;
 
 /**
  * Base fragment that ensures activities including it use the SolaDroidFragmentContract.
- *
+ * <p/>
  * Created by mihai on 5/22/15.
  */
 public abstract class SolaDroidBaseFragment extends Fragment {

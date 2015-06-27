@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/trello_setup_boards_section_label"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/text_headline"/>
 
         <Spinner
             android:id="@+id/trello_setup_boards_section_spinner"
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/trello_setup_boards_section"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/space_4"
         android:orientation="vertical">
 
         <TextView
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/trello_setup_todo_section_label"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/text_headline"/>
 
         <Spinner
             android:id="@+id/trello_setup_todo_section_spinner"
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/trello_setup_todo_section"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/space_4"
         android:orientation="vertical">
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/trello_setup_doing_section_label"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/text_headline"/>
 
         <Spinner
             android:id="@+id/trello_setup_doing_section_spinner"
@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/trello_setup_doing_section"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/space_4"
         android:orientation="vertical">
 
         <TextView
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/trello_setup_done_section_label"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/text_headline"/>
 
         <Spinner
             android:id="@+id/trello_setup_done_section_spinner"

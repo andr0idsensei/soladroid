@@ -1,8 +1,8 @@
-package com.androidsensei.soladroid;
+package com.androidsensei.soladroid.setup.ui;
 
 /**
- * This interface provides the contract for navigating between fragments in the SolaDroidActivity.
- *
+ * This interface provides the contract for navigating between fragments in the TrelloSetupActivity.
+ * <p/>
  * Created by mihai on 5/22/15.
  */
 public interface SolaDroidFragmentContract {
@@ -15,11 +15,6 @@ public interface SolaDroidFragmentContract {
      * Show the fragment for setting up the Trello to do, doing and done lists.
      */
     void showSetupFragment();
-
-    /**
-     * Show the fragment for timing the tasks using the Pomodoro technique.
-     */
-    void showTimerFragment();
 
     /**
      * Show the fragment for choosing the Trello tasks to work on. - todo this is going to be an activity

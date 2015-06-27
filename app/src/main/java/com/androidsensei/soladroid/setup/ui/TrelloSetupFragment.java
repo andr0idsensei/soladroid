@@ -12,10 +12,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.setup.ui.logic.LoadTrelloListsCallback;
+import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
-import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
@@ -224,7 +225,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         @Override
         protected List<Board> doInBackground(String... params) {
             Log.d("r1k0", "doInBackground params: " + params[0] + " - " + params[1]);
-            TrelloService service = TrelloServiceFactory.createService();
+            TrelloApiService service = TrelloServiceFactory.createService();
             MemberToken token = service.getMemberToken(params[1], params[0]);
             Log.d("r1k0", "token: " + token);
 
@@ -264,7 +265,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         @Override
         protected List<TrelloList> doInBackground(String... params) {
             boardId = params[0];
-            TrelloService service = TrelloServiceFactory.createService();
+            TrelloApiService service = TrelloServiceFactory.createService();
 
             return service.loadTaskListsForBoard(boardId, params[1], params[2]);
         }
