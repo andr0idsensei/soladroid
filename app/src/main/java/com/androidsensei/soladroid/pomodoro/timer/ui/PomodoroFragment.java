@@ -311,6 +311,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 TrelloCallsService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
                 TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
                         SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, getActivity()));
+                getActivity().onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
             }
         });
     }
