@@ -140,6 +140,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
         setupShortBreakButton();
         setupLongBreakButton();
         setupDoneButton();
+        setupBackButton();
     }
 
     /**
@@ -311,6 +312,22 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 TrelloCallsService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
                 TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
                         SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, getActivity()));
+                getActivity().onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
+            }
+        });
+    }
+
+    /**
+     * Sets up the back button.
+     */
+    private void setupBackButton() {
+        Button back = (Button) getView().findViewById(R.id.timer_pomodoro_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pomodoroTimer.stop();
+                TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
+                        SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, getActivity()));
                 getActivity().onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
             }
         });
