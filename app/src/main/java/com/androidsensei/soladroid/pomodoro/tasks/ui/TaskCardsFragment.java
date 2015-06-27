@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.SolaDroidActivity;
+import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
-import com.androidsensei.soladroid.trello.api.TrelloService;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
@@ -143,7 +143,7 @@ public class TaskCardsFragment extends Fragment {
         @Override
         protected List<Card> doInBackground(String... params) {
             listId = params[0];
-            TrelloService service = TrelloServiceFactory.createService();
+            TrelloApiService service = TrelloServiceFactory.createService();
 
             return service.loadTrelloCardsForList(listId, TrelloConstants.TRELLO_APP_KEY, params[1]);
         }

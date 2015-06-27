@@ -12,7 +12,7 @@ import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroFragmentStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.model.Card;
-import com.androidsensei.soladroid.trello.api.service.TrelloApiService;
+import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
@@ -297,7 +297,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 pomodoroTimer.stop();
                 String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
                         stateManager.totalTime());
-                TrelloApiService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
+                TrelloCallsService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
             }
         });
     }

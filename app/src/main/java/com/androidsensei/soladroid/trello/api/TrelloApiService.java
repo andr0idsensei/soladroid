@@ -17,16 +17,16 @@ import retrofit.http.Query;
 /**
  * Interface which defines the Trello API service REST requests and which is used by Retrofit to handle the requests to
  * Trello.
- *
+ * <p/>
  * Created by mihai on 5/17/15.
  */
-public interface TrelloService {
+public interface TrelloApiService {
     String BASE_URL = "https://trello.com/1";
 
     /**
      * Returns the list of Trello open boards for the user, including the lists in the boards.
      *
-     * @param appKey the application key
+     * @param appKey   the application key
      * @param appToken the app auth token
      * @return the above mentioned list of boards.
      */
@@ -38,7 +38,7 @@ public interface TrelloService {
      * Returns the request auth token as well as the member id for a given application authorization token.
      *
      * @param authToken the app authorization token
-     * @param appKey the application key
+     * @param appKey    the application key
      * @return the member object containing the described data.
      */
     @GET("/tokens/{authToken}")
@@ -47,8 +47,8 @@ public interface TrelloService {
     /**
      * Returns the list of Trello task lists that belong to a given board.
      *
-     * @param boardId the board id
-     * @param appKey the application key
+     * @param boardId  the board id
+     * @param appKey   the application key
      * @param appToken the application authorization token
      * @return the above mentioned list of task lists.
      */
@@ -58,8 +58,9 @@ public interface TrelloService {
 
     /**
      * Returns the list of Trello cards that belong to a given task list.
-     * @param listId the task list id
-     * @param appKey the application key
+     *
+     * @param listId   the task list id
+     * @param appKey   the application key
      * @param appToken the application token
      * @return the above mentioned list of cards.
      */

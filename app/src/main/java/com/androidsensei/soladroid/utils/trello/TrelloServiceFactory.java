@@ -1,6 +1,6 @@
 package com.androidsensei.soladroid.utils.trello;
 
-import com.androidsensei.soladroid.trello.api.TrelloService;
+import com.androidsensei.soladroid.trello.api.TrelloApiService;
 
 import retrofit.RestAdapter;
 
@@ -18,16 +18,16 @@ public final class TrelloServiceFactory {
     }
 
     /**
-     * Creates and returns a Retrofit TrelloService implementation in order for us to do Trello API calls.
+     * Creates and returns a Retrofit TrelloApiService implementation in order for us to do Trello API calls.
      *
      * @return the Trello service implementation.
      */
-    public static TrelloService createService() {
+    public static TrelloApiService createService() {
         //todo remove logging - maybe move this in a service - use some notification system
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(TrelloService.BASE_URL).setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(TrelloApiService.BASE_URL).setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
-        TrelloService service = restAdapter.create(TrelloService.class);
+        TrelloApiService service = restAdapter.create(TrelloApiService.class);
 
         return service;
     }

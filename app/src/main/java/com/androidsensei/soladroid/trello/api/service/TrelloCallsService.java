@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
-import com.androidsensei.soladroid.trello.api.TrelloService;
+import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
@@ -12,7 +12,7 @@ import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
 /**
  * Intent service for handling Trello API calls in the background.
  */
-public class TrelloApiService extends IntentService {
+public class TrelloCallsService extends IntentService {
     /**
      * Intent action name for saving the time comment.
      */
@@ -41,7 +41,7 @@ public class TrelloApiService extends IntentService {
     /**
      * The Trello REST API Service wrapper created with Retrofit.
      */
-    private TrelloService trelloService;
+    private TrelloApiService trelloApiService;
 
     /**
      * The Trello App Token.
@@ -55,7 +55,7 @@ public class TrelloApiService extends IntentService {
      * @see IntentService
      */
     public static void saveTimeComment(Context context, String timeCommentText, String cardId) {
-        Intent intent = new Intent(context, TrelloApiService.class);
+        Intent intent = new Intent(context, TrelloCallsService.class);
         intent.setAction(ACTION_SAVE_TIME_COMMENT);
         intent.putExtra(EXTRA_COMMENT_TEXT, timeCommentText);
         intent.putExtra(EXTRA_CARD_ID, cardId);
@@ -65,9 +65,9 @@ public class TrelloApiService extends IntentService {
     /**
      * Service constructor.
      */
-    public TrelloApiService() {
-        super("TrelloApiService");
-        trelloService = TrelloServiceFactory.createService();
+    public TrelloCallsService() {
+        super("TrelloCallsService");
+        trelloApiService = TrelloServiceFactory.createService();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class TrelloApiService extends IntentService {
      * @param cardId          the Trello card id for which the comment is saved
      */
     private void handleActionSaveTimeComment(String timeCommentText, String cardId) {
-        trelloService.addTimeComment(cardId, timeCommentText, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+        trelloApiService.addTimeComment(cardId, timeCommentText, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
     }
 
 }
