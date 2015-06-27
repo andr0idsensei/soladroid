@@ -214,7 +214,6 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
     /**
      * AsyncTask for loading the Trello open boards in the spinner.
-     * TODO - would nice to have this in the intent service and send back a broadcast when it's done
      */
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
         private SetupSpinnerAdapter boardNamesAdapter;
@@ -247,8 +246,6 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
     /**
      * AsyncTask for loading the Trello task lists that belong to a given board.
-     *
-     * TODO - would nice to have this in the intent service and send back a broadcast when it's done
      */
     private static class LoadTaskListsTask extends AsyncTask<String, Void, List<TrelloList>> {
         /**

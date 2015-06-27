@@ -18,6 +18,8 @@ import com.androidsensei.soladroid.utils.SharedPrefsUtil;
  * This activity allows for sliding between the to do, doing and done Trello task lists in order for the users to
  * check out what is the status of their tasks.
  *
+ * TODO set the correct label in the action bar
+ *
  * Created by mihai on 5/29/15.
  */
 public class TaskStatusActivity extends ActionBarActivity {

@@ -7,11 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
-import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAccessDeniedFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloAuthFragment;
 import com.androidsensei.soladroid.setup.ui.TrelloSetupFragment;
-import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
@@ -20,7 +18,7 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 /**
  * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
  * the users.
- *
+ * <p/>
  * TODO polish the UI interface
  * TODO add some error handling for Trello requests
  * TODO update navigation between activities if needed - clean interfaces
@@ -48,12 +46,7 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         String appKey = SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, this);
         boolean isSetup = SharedPrefsUtil.loadPreferenceBoolean(AppConstants.IS_APP_SETUP_KEY, this);
         if (isSetup) {
-            Card card = (Card) getIntent().getSerializableExtra(AppConstants.ARG_START_TASK_CARD);
-            if (card != null) {
-                showPomodoroFragment(card);
-            } else {
-                showTaskStatusActivity();
-            }
+            showTaskStatusActivity();
         } else {
             if ("".equals(appKey)) {
                 showAuthFragment();
@@ -81,19 +74,6 @@ public class SolaDroidActivity extends ActionBarActivity implements SolaDroidFra
         } else {
             replaceCurrentFragment(new TrelloSetupFragment(), SETUP_FRAGMENT_TAG);
         }
-    }
-
-    @Override
-    public void showPomodoroFragment(Card card) {
-        PomodoroFragment pomodoroFragment = null;
-
-        if (configurationChanged) {
-            pomodoroFragment = (PomodoroFragment) getFragmentManager().findFragmentByTag(POMODORO_FRAGMENT_TAG);
-        } else {
-            pomodoroFragment = PomodoroFragment.createFragment(card);
-        }
-
-        replaceCurrentFragment(pomodoroFragment, POMODORO_FRAGMENT_TAG);
     }
 
     @Override

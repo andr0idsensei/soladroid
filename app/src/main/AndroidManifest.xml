@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.androidsensei.soladroid">
+<manifest
+    package="com.androidsensei.soladroid"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -18,9 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".pomodoro.tasks.ui.TaskStatusActivity"
             android:label="@string/task_status_activity_title">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".pomodoro.timer.ui.PomodoroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 

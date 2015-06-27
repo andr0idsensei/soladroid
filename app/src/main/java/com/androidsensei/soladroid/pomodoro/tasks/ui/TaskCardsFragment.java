@@ -1,7 +1,6 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.SolaDroidActivity;
+import com.androidsensei.soladroid.pomodoro.timer.ui.PomodoroActivity;
 import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Card;
@@ -78,9 +77,7 @@ public class TaskCardsFragment extends Fragment {
             taskCardsAdapter = new TrelloTaskCardsAdapter(new TrelloTaskCardsAdapter.CardActionCallback() {
                 @Override
                 public void onCardTap(Card cardData) {
-                    Intent startTask = new Intent(getActivity(), SolaDroidActivity.class);
-                    startTask.putExtra(AppConstants.ARG_START_TASK_CARD, cardData);
-                    startActivity(startTask);
+                    startActivity(PomodoroActivity.getPomodoroActivityIntent(getActivity(), cardData));
                 }
             });
         } else {

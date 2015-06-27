@@ -3,17 +3,17 @@ package com.androidsensei.soladroid.pomodoro.timer.logic;
 import com.androidsensei.soladroid.trello.api.model.Card;
 
 /**
- * Singleton class for managing the countdownTime of the Pomodoro fragment. It is better to use this approach since I may be able
+ * Singleton class for managing the countdownTime of the Pomodoro activity. It is better to use this approach since I may be able
  * to encapsulate some countdownTime specific logic in here and move it out of the fragment.
- *
+ * <p/>
  * Created by mihai on 6/6/15.
  */
-public class PomodoroFragmentStateManager {
+public class PomodoroActivityStateManager {
 
     /**
      * The unique instance of the countdownTime manager.
      */
-    private static PomodoroFragmentStateManager instance;
+    private static PomodoroActivityStateManager instance;
 
     /**
      * The countdownTime value for the current timer - it can be that of a Pomodoro, a Short or a Long Break.
@@ -43,7 +43,7 @@ public class PomodoroFragmentStateManager {
     /**
      * Private constructor as we control the intantiating process from within.
      */
-    private PomodoroFragmentStateManager() {
+    private PomodoroActivityStateManager() {
     }
 
     /**
@@ -51,9 +51,9 @@ public class PomodoroFragmentStateManager {
      *
      * @return the unique instance of this class
      */
-    public static PomodoroFragmentStateManager getInstance () {
+    public static PomodoroActivityStateManager getInstance() {
         if (instance == null) {
-            instance = new PomodoroFragmentStateManager();
+            instance = new PomodoroActivityStateManager();
         }
 
         return instance;
@@ -131,7 +131,7 @@ public class PomodoroFragmentStateManager {
     /**
      * Initializes the timer with the given CountdownTime which can be a Pomodoro, a Short Break or a Long Break.
      *
-     * @param state the countdownTime which will tell the timer's initial time.
+     * @param state    the countdownTime which will tell the timer's initial time.
      * @param callback the callback from the timer when various actions happen.
      * @return the initialized PomodoroTimer
      */

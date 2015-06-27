@@ -1,33 +1,32 @@
 package com.androidsensei.soladroid.pomodoro.timer.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroFragmentStateManager;
+import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroActivityStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO handle the done/back buttons
- * TODO move started tasks to the "in progress" list
+ * <p/>
  * Created by mihai on 5/29/15.
  */
-public class PomodoroFragment extends SolaDroidBaseFragment {
+public class PomodoroActivity extends ActionBarActivity {
     /**
      * This fragment's countdownTime manager.
      */
-    private PomodoroFragmentStateManager stateManager;
+    private PomodoroActivityStateManager stateManager;
 
     /**
      * The Pomodoro count down timer used to determine the current countdownTime of the Pomodoro for the task at hand.
@@ -70,17 +69,12 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     private Button longBreak;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pomodoro, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_pomodoro);
+        Card trelloCard = (Card) getIntent().getExtras().getSerializable(AppConstants.ARG_START_TASK_CARD);
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Card trelloCard = (Card) getArguments().getSerializable(AppConstants.ARG_START_TASK_CARD);
-
-        stateManager = PomodoroFragmentStateManager.getInstance();
+        stateManager = PomodoroActivityStateManager.getInstance();
         stateManager.setTrelloCard(trelloCard);
 
         initTheTimer(savedInstanceState);
@@ -96,7 +90,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void initTheTimer(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
+            initCountdownTimer(PomodoroActivityStateManager.CountdownTime.POMODORO, false);
         } else {
             initCountdownTimer(stateManager.countdownTime(), true);
         }
@@ -118,8 +112,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Initializes the views for the fragment.
      */
     private void initTextViews() {
-        pomodoroCounter = (TextView) getView().findViewById(R.id.timer_pomodoro_counter);
-        pomodoroTotalTime = (TextView) getView().findViewById(R.id.timer_pomodoro_total);
+        pomodoroCounter = (TextView) findViewById(R.id.timer_pomodoro_counter);
+        pomodoroTotalTime = (TextView) findViewById(R.id.timer_pomodoro_total);
 
         pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
         pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
@@ -130,10 +124,10 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Initializes the action buttons for countdown management of Pomodoros and breaks.
      */
     private void initButtons() {
-        pause = (Button) getView().findViewById(R.id.timer_pomodoro_pause);
-        stop = (Button) getView().findViewById(R.id.timer_pomodoro_stop);
-        shortBreak = (Button) getView().findViewById(R.id.timer_pomodoro_five);
-        longBreak = (Button) getView().findViewById(R.id.timer_pomodoro_fifteen);
+        pause = (Button) findViewById(R.id.timer_pomodoro_pause);
+        stop = (Button) findViewById(R.id.timer_pomodoro_stop);
+        shortBreak = (Button) findViewById(R.id.timer_pomodoro_five);
+        longBreak = (Button) findViewById(R.id.timer_pomodoro_fifteen);
 
         setupPomodoroPauseButton();
         setupPomodoroStopButton();
@@ -147,7 +141,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Initializes the timer view.
      */
     private void setTimerView() {
-        pomodoroTimerView = (TextView) getView().findViewById(R.id.timer_pomodoro_timer);
+        pomodoroTimerView = (TextView) findViewById(R.id.timer_pomodoro_timer);
         pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(pomodoroTimer.getRemainingTime()));
     }
 
@@ -224,7 +218,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
             @Override
             public void onClick(View v) {
                 if (pomodoroTimer.isFinished()) {
-                    initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.POMODORO, false);
+                    initCountdownTimer(PomodoroActivityStateManager.CountdownTime.POMODORO, false);
                     pomodoroTimer.start();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
                     toggleBreakButtons(false);
@@ -249,8 +243,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      */
     private void setCardInProgress() {
         if (!stateManager.isTaskInProgress()) {
-            TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
-                    SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, getActivity()));
+            TrelloCallsService.moveCardToList(this, stateManager.trelloCard().getId(),
+                    SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, this));
         }
     }
 
@@ -268,11 +262,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Sets up the short break button.
      */
     private void setupShortBreakButton() {
-        final Button shortBreak = (Button) getView().findViewById(R.id.timer_pomodoro_five);
+        final Button shortBreak = (Button) findViewById(R.id.timer_pomodoro_five);
         shortBreak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.SHORT_BREAK, false);
+                initCountdownTimer(PomodoroActivityStateManager.CountdownTime.SHORT_BREAK, false);
                 setTimerView();
                 toggleBreakButtons(false);
                 stop.setEnabled(false);
@@ -285,11 +279,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Sets up the long break button.
      */
     private void setupLongBreakButton() {
-        final Button longBreak = (Button) getView().findViewById(R.id.timer_pomodoro_fifteen);
+        final Button longBreak = (Button) findViewById(R.id.timer_pomodoro_fifteen);
         longBreak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initCountdownTimer(PomodoroFragmentStateManager.CountdownTime.LONG_BREAK, false);
+                initCountdownTimer(PomodoroActivityStateManager.CountdownTime.LONG_BREAK, false);
                 setTimerView();
                 toggleBreakButtons(false);
                 stop.setEnabled(false);
@@ -302,17 +296,17 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Sets up the done button.
      */
     private void setupDoneButton() {
-        Button done = (Button) getView().findViewById(R.id.timer_pomodoro_done);
+        Button done = (Button) findViewById(R.id.timer_pomodoro_done);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pomodoroTimer.stop();
                 String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
                         stateManager.totalTime());
-                TrelloCallsService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
-                TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
-                        SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, getActivity()));
-                getActivity().onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
+                TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
+                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(),
+                        SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this));
+                onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
             }
         });
     }
@@ -321,14 +315,14 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
      * Sets up the back button.
      */
     private void setupBackButton() {
-        Button back = (Button) getView().findViewById(R.id.timer_pomodoro_back);
+        Button back = (Button) findViewById(R.id.timer_pomodoro_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pomodoroTimer.stop();
-                TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
-                        SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, getActivity()));
-                getActivity().onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
+                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(),
+                        SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this));
+                onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
             }
         });
     }
@@ -336,13 +330,11 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
     /**
      * Creates and initializes the Pomodoro countdown timer.
      */
-    private void initCountdownTimer(final PomodoroFragmentStateManager.CountdownTime initialCountdown, boolean configChanged) {
+    private void initCountdownTimer(final PomodoroActivityStateManager.CountdownTime initialCountdown, boolean configChanged) {
         pomodoroTimer = stateManager.initTimer(configChanged, initialCountdown, new PomodoroTimer.PomodoroCounterCallback() {
             @Override
             public void onTick(long secondsToNone) {
-                if (isAdded()) {
-                    pomodoroTimerView.setText(DateUtils.formatElapsedTime(secondsToNone));
-                }
+                pomodoroTimerView.setText(DateUtils.formatElapsedTime(secondsToNone));
             }
 
             @Override
@@ -350,47 +342,37 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 if (stateManager.pomodoroFinished()) {
                     stateManager.incrementTotalTime(elapsedTime);
                     stateManager.incrementPomodoroCount();
-                    if (isAdded()) {
-                        pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
-                        pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
-                    }
+                    pomodoroCounter.setText(getString(R.string.timer_pomodoro_counter, "" + stateManager.pomodoroCount()));
+                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
                 } else if (stateManager.breakFinished()) {
-                    if (isAdded()) {
-                        pause.setEnabled(true);
-                    }
+                    pause.setEnabled(true);
                 }
-                if (isAdded()) {
-                    toggleBreakButtons(true);
-                    setupStopButton();
-                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
-                }
+                toggleBreakButtons(true);
+                setupStopButton();
+                pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(0));
             }
 
             @Override
             public void onStop(long elapsedTime) {
                 stateManager.incrementTotalTime(elapsedTime);
-                if (isAdded()) {
-                    pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
-                    pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(initialCountdown.value()));
-                }
+                pomodoroTotalTime.setText(getString(R.string.timer_pomodoro_total, DateUtils.formatElapsedTime(stateManager.totalTime())));
+                pomodoroTimerView.setText("" + DateUtils.formatElapsedTime(initialCountdown.value()));
             }
         });
     }
 
     /**
-     * Factory method for creating pomodoro fragment instances.
+     * Get the intent with which this activity can be started.
      *
-     * @param card the Trello card we're currently working on - passed in the Fragment arguments
-     * @return the PomodoroFragment instance created with arguments set
+     * @param context the context form which the activity is started
+     * @param card    the Trello card id
+     * @return the intent to start this activity
      */
-    public static PomodoroFragment createFragment(Card card) {
-        PomodoroFragment fragment = new PomodoroFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(AppConstants.ARG_START_TASK_CARD, card);
-        fragment.setArguments(args);
-        return fragment;
+    public static Intent getPomodoroActivityIntent(Context context, Card card) {
+        Intent pomodoroActivityIntent = new Intent(context, PomodoroActivity.class);
+        pomodoroActivityIntent.putExtra(AppConstants.ARG_START_TASK_CARD, card);
+
+        return pomodoroActivityIntent;
     }
 
-    public PomodoroFragment() {
-    }
 }
