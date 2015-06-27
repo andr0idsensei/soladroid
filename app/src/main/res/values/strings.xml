@@ -13,6 +13,9 @@
 
     <!-- strings for the task status functionality -->
     <string name="task_status_activity_title">Task Status</string>
+    <string name="task_status_todo">To Do</string>
+    <string name="task_status_doing">Doing</string>
+    <string name="task_status_done">Done</string>
     <string name="task_status_action_previous">previous</string>
     <string name="task_status_action_next">next</string>
 

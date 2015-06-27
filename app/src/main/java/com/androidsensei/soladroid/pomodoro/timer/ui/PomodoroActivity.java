@@ -77,6 +77,8 @@ public class PomodoroActivity extends ActionBarActivity {
         stateManager = PomodoroActivityStateManager.getInstance();
         stateManager.setTrelloCard(trelloCard);
 
+        getSupportActionBar().setTitle(stateManager.trelloCard().getName());
+
         initTheTimer(savedInstanceState);
         initTextViews();
         initButtons();

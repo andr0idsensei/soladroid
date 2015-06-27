@@ -46,7 +46,8 @@ public class TaskStatusActivity extends ActionBarActivity {
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-              invalidateOptionsMenu();
+                //TODO add the action bar title
+                invalidateOptionsMenu();
             }
         });
     }
