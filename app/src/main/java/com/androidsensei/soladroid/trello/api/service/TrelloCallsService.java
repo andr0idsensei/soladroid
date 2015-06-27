@@ -36,7 +36,7 @@ public class TrelloCallsService extends IntentService {
     /**
      * Intent extra param name for the "to board" id value.
      */
-    private static final String EXTRA_TO_BOARD_ID = "com.androidsensei.soladroid.trello.api.service.extra.TO_BOARD_ID";
+    private static final String EXTRA_TO_LIST_ID = "com.androidsensei.soladroid.trello.api.service.extra.TO_LIST_ID";
 
     /**
      * The Trello REST API Service wrapper created with Retrofit.
@@ -63,6 +63,22 @@ public class TrelloCallsService extends IntentService {
     }
 
     /**
+     * Starts this service to perform the move card to list action with the given paramenters. If the service is already
+     * performing a task, this action will be queued.
+     *
+     * @param context the context in which the service is started
+     * @param cardId  the card id to be moved
+     * @param listId  the list id of the Trello task list where the card is moved
+     */
+    public static void moveCardToList(Context context, String cardId, String listId) {
+        Intent intent = new Intent(context, TrelloCallsService.class);
+        intent.setAction(ACTION_MOVE_CARD);
+        intent.putExtra(EXTRA_CARD_ID, cardId);
+        intent.putExtra(EXTRA_TO_LIST_ID, listId);
+        context.startService(intent);
+    }
+
+    /**
      * Service constructor.
      */
     public TrelloCallsService() {
@@ -84,6 +100,10 @@ public class TrelloCallsService extends IntentService {
                 final String timeCommentText = intent.getStringExtra(EXTRA_COMMENT_TEXT);
                 final String cardId = intent.getStringExtra(EXTRA_CARD_ID);
                 handleActionSaveTimeComment(timeCommentText, cardId);
+            } else if (ACTION_MOVE_CARD.equals(action)) {
+                final String cardId = intent.getStringExtra(EXTRA_CARD_ID);
+                final String listId = intent.getStringExtra(EXTRA_TO_LIST_ID);
+                handleActionMoveCard(cardId, listId);
             }
         }
     }
@@ -97,6 +117,16 @@ public class TrelloCallsService extends IntentService {
      */
     private void handleActionSaveTimeComment(String timeCommentText, String cardId) {
         trelloApiService.addTimeComment(cardId, timeCommentText, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+    }
+
+    /**
+     * Handle the move card to list action in the provided background thread with the provided parameters.
+     *
+     * @param cardId the card id
+     * @param listId the list id where the card is moved
+     */
+    private void handleActionMoveCard(String cardId, String listId) {
+        trelloApiService.moveCardToList(cardId, listId, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
     }
 
 }

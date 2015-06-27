@@ -14,12 +14,12 @@ import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
+import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
  * TODO handle the done/back buttons
- * TODO persist the Trello Card data
  * TODO move started tasks to the "in progress" list
  * Created by mihai on 5/29/15.
  */
@@ -232,6 +232,7 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                     stop.setText(getResources().getText(R.string.timer_pomodoro_stop));
                     pause.setEnabled(true);
                     toggleBreakButtons(false);
+                    setCardInProgress();
                 } else {
                     pomodoroTimer.stop();
                     stop.setText(getResources().getText(R.string.timer_pomodoro_start));
@@ -240,6 +241,16 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 }
             }
         });
+    }
+
+    /**
+     * Sets the current task in progress, once we start the pomodoro counter.
+     */
+    private void setCardInProgress() {
+        if (!stateManager.isTaskInProgress()) {
+            TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
+                    SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, getActivity()));
+        }
     }
 
     /**
@@ -298,6 +309,8 @@ public class PomodoroFragment extends SolaDroidBaseFragment {
                 String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
                         stateManager.totalTime());
                 TrelloCallsService.saveTimeComment(getActivity(), timeComment, stateManager.trelloCard().getId());
+                TrelloCallsService.moveCardToList(getActivity(), stateManager.trelloCard().getId(),
+                        SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, getActivity()));
             }
         });
     }

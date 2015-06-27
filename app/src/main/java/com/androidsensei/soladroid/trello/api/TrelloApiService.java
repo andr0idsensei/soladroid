@@ -11,6 +11,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -76,5 +77,16 @@ public interface TrelloApiService {
     @FormUrlEncoded
     @POST("/cards/{cardId}/actions/comments")
     Card addTimeComment(@Path("cardId") String cardId, @Field("text") String timeComment, @Field("key") String appKey,
+                        @Field("token") String appToken);
+
+    /**
+     * Moves the card represented by the given card id to the list represented by the given list id.
+     *
+     * @param cardId the card id
+     * @param listId the list id
+     */
+    @FormUrlEncoded
+    @PUT("/cards/{cardId}")
+    Card moveCardToList(@Path("cardId") String cardId, @Field("idList") String listId, @Field("key") String appKey,
                         @Field("token") String appToken);
 }

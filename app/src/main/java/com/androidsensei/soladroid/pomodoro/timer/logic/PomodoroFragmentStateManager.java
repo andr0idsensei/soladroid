@@ -122,6 +122,13 @@ public class PomodoroFragmentStateManager {
     }
 
     /**
+     * @return true if the current task is already in progres, false if it's not started yet.
+     */
+    public boolean isTaskInProgress() {
+        return totalTime != 0;
+    }
+
+    /**
      * Initializes the timer with the given CountdownTime which can be a Pomodoro, a Short Break or a Long Break.
      *
      * @param state the countdownTime which will tell the timer's initial time.
