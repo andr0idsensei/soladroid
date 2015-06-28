@@ -118,7 +118,11 @@ public final class TrelloResultsManager {
     public void moveCardToList(String originListId, String destinationListId, Card card) {
         List<Card> origin = trelloCards.get(originListId);
         List<Card> destination = trelloCards.get(destinationListId);
-        origin.remove(card);
-        destination.add(card);
+        if (origin != null) { // make sure data is already loaded
+            origin.remove(card);
+        }
+        if (destination != null) {
+            destination.add(card);
+        }
     }
 }

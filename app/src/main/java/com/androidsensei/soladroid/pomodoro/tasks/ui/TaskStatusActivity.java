@@ -2,6 +2,8 @@ package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -24,6 +26,8 @@ import com.androidsensei.soladroid.utils.SharedPrefsUtil;
  */
 public class TaskStatusActivity extends ActionBarActivity {
 
+    private static final String ACTION_REFRESH_DATA = "com.androidsensei.soladroid.pomodoro.tasks.ui.action.ACTION_REFRESH_DATA";
+
     /**
      * The number of pages corresponds to the number of Trello Task Lists that we want to switch between.
      */
@@ -39,8 +43,12 @@ public class TaskStatusActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_status);
-
         pager = (ViewPager) findViewById(R.id.tasks_status_view_pager);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         PagerAdapter pagerAdapter = new TaskListsPagerAdapter(getFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -80,6 +88,18 @@ public class TaskStatusActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Return the intent used for starting this activity.
+     *
+     * @param context the context from which the activity gets started
+     * @return the proper intent
+     */
+    public static Intent getActivityIntent(Context context) {
+        Intent activityIntent = new Intent(context, TaskStatusActivity.class);
+
+        return activityIntent;
     }
 
     /**

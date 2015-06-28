@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroActivityStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
@@ -313,7 +314,7 @@ public class PomodoroActivity extends ActionBarActivity {
                 TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
                 TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), doneList);
                 TrelloResultsManager.getInstance().moveCardToList(doingList, doneList, stateManager.trelloCard());
-                onBackPressed();
+                startTaskStatusActivity();
             }
         });
     }
@@ -331,11 +332,19 @@ public class PomodoroActivity extends ActionBarActivity {
                 String todoList = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this);
                 TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), todoList);
                 TrelloResultsManager.getInstance().moveCardToList(doingList, todoList, stateManager.trelloCard());
-                onBackPressed();
+                startTaskStatusActivity();
             }
         });
     }
 
+    /**
+     * Starts the task status activity, clearing the activity stack.
+     */
+    private void startTaskStatusActivity() {
+        Intent taskActivity = TaskStatusActivity.getActivityIntent(PomodoroActivity.this);
+        taskActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(taskActivity);
+    }
     /**
      * Creates and initializes the Pomodoro countdown timer.
      */
