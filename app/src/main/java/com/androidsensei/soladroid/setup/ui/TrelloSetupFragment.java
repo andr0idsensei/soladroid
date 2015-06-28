@@ -2,7 +2,6 @@ package com.androidsensei.soladroid.setup.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,10 +223,8 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
         @Override
         protected List<Board> doInBackground(String... params) {
-            Log.d("r1k0", "doInBackground params: " + params[0] + " - " + params[1]);
             TrelloApiService service = TrelloServiceFactory.createService();
             MemberToken token = service.getMemberToken(params[1], params[0]);
-            Log.d("r1k0", "token: " + token);
 
             List<Board> boards = service.loadOpenBoards(token.getIdMember(), params[0], params[1]);
 
@@ -236,7 +233,6 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
 
         @Override
         protected void onPostExecute(List<Board> boards) {
-            Log.d("r1k0", "trello boards: " + boards);
             if (boards != null) {
                 TrelloResultsManager.getInstance().putTrelloBoards(boards);
                 boardNamesAdapter.addItems(boards);
