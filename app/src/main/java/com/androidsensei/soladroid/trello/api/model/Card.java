@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * Class that models a Trello card (task).
- * TODO make this implement parcelable
  *
  * Created by mihai on 5/24/15.
  */
@@ -35,4 +34,19 @@ public class Card implements Serializable {
         return desc;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Card card = (Card) o;
+
+        return id.equals(card.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

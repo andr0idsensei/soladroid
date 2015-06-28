@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroActivityStateManager;
 import com.androidsensei.soladroid.pomodoro.timer.logic.PomodoroTimer;
+import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
@@ -245,8 +246,10 @@ public class PomodoroActivity extends ActionBarActivity {
      */
     private void setCardInProgress() {
         if (!stateManager.isTaskInProgress()) {
-            TrelloCallsService.moveCardToList(this, stateManager.trelloCard().getId(),
-                    SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, this));
+            String todoListId = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, this);
+            String doingListId = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, this);
+            TrelloCallsService.moveCardToList(this, stateManager.trelloCard().getId(), doingListId);
+            TrelloResultsManager.getInstance().moveCardToList(todoListId, doingListId, stateManager.trelloCard());
         }
     }
 
@@ -305,10 +308,12 @@ public class PomodoroActivity extends ActionBarActivity {
                 pomodoroTimer.stop();
                 String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
                         stateManager.totalTime());
+                String doingList = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, PomodoroActivity.this);
+                String doneList = SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this);
                 TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
-                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(),
-                        SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this));
-                onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
+                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), doneList);
+                TrelloResultsManager.getInstance().moveCardToList(doingList, doneList, stateManager.trelloCard());
+                onBackPressed();
             }
         });
     }
@@ -322,9 +327,11 @@ public class PomodoroActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 pomodoroTimer.stop();
-                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(),
-                        SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this));
-                onBackPressed(); // TODO use an intent here to tell the task status activity to reload with the updates
+                String doingList = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, PomodoroActivity.this);
+                String todoList = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this);
+                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), todoList);
+                TrelloResultsManager.getInstance().moveCardToList(doingList, todoList, stateManager.trelloCard());
+                onBackPressed();
             }
         });
     }
