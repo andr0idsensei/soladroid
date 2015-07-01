@@ -1,4 +1,4 @@
-package com.androidsensei.soladroid.utils;
+package com.androidsensei.soladroid.utils.ui;
 
 import android.app.Activity;
 import android.app.Fragment;

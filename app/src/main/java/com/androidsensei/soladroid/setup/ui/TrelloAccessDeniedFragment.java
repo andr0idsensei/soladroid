@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.androidsensei.soladroid.R;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
+import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 /**
  * This fragment will be displayed to the user when she denies access to her Trello account.
- *
+ * <p/>
  * Created by mihai on 5/22/15.
  */
 public class TrelloAccessDeniedFragment extends SolaDroidBaseFragment {

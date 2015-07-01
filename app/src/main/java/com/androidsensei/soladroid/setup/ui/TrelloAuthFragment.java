@@ -10,8 +10,8 @@ import android.webkit.WebView;
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloWebViewClient;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
+import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 /**
  * This fragment is used for setting up Trello authorization for our application. It will use a web view to load the
@@ -40,7 +40,7 @@ public class TrelloAuthFragment extends SolaDroidBaseFragment {
     }
 
     /**
-     *  Sets up the web view which will connect to Trello in order to allow authorization for the app.
+     * Sets up the web view which will connect to Trello in order to allow authorization for the app.
      */
     private void setupWebView() {
         WebSettings webSettings = webView.getSettings();

@@ -19,16 +19,16 @@ import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
+import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 import java.util.List;
 
 /**
  * The setup fragment will display the user's Trello boards and will allow her to choose which board to use, as well
  * as match lists in the board to the to do, doing, done lists in the application.
- *
+ * <p/>
  * TODO re-iterate the UI and polish it
  */
 public class TrelloSetupFragment extends SolaDroidBaseFragment {
