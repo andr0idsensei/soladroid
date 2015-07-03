@@ -79,7 +79,10 @@ public class NetworkExceptionDialog extends DialogFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putAll(getArguments());
+        Bundle args = getArguments();
+        if (args != null) {
+            outState.putAll(getArguments());
+        }
         super.onSaveInstanceState(outState);
     }
 

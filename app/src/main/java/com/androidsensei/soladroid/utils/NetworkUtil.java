@@ -1,8 +1,13 @@
 package com.androidsensei.soladroid.utils;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.androidsensei.soladroid.utils.ui.NetworkExceptionDialog;
+
+import retrofit.RetrofitError;
 
 /**
  * Utility class for doing various network related stuff such as checking if WiFi/Cellular network is available.
@@ -28,5 +33,24 @@ public final class NetworkUtil {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         return networkInfo != null;
+    }
+
+    /**
+     * Display the network exception dialog when dealing with Retrofit errors.
+     *
+     * @param fragmentManager the fragment manager
+     * @param error           the Retrofit error
+     */
+    public static void showNetworkExceptionDialog(FragmentManager fragmentManager, RetrofitError error) {
+        NetworkExceptionDialog dialog = null;
+
+        if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+            dialog = NetworkExceptionDialog.createInstance();
+
+        } else {
+            dialog = NetworkExceptionDialog.createInstance(error.getLocalizedMessage());
+        }
+
+        NetworkExceptionDialog.showDialog(fragmentManager, dialog);
     }
 }

@@ -1,5 +1,6 @@
 package com.androidsensei.soladroid.setup.ui;
 
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,12 +19,15 @@ import com.androidsensei.soladroid.trello.api.model.Board;
 import com.androidsensei.soladroid.trello.api.model.MemberToken;
 import com.androidsensei.soladroid.trello.api.model.TrelloList;
 import com.androidsensei.soladroid.utils.AppConstants;
+import com.androidsensei.soladroid.utils.NetworkUtil;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
 import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 import java.util.List;
+
+import retrofit.RetrofitError;
 
 /**
  * The setup fragment will display the user's Trello boards and will allow her to choose which board to use, as well
@@ -74,8 +78,8 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onResume() {
+        super.onResume();
 
         setupTaskLists();
         setupBoardsSpinner();
@@ -117,8 +121,8 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         if (resultsManager.hasBoards()) {
             boardNamesAdapter.addItems(resultsManager.getTrelloBoards());
         } else {
-            new LoadBoardsTask(boardNamesAdapter).execute(TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(
-                    TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+            new LoadBoardsTask(boardNamesAdapter, getFragmentManager()).execute(TrelloConstants.TRELLO_APP_KEY,
+                    SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
         }
 
         boardsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -134,7 +138,7 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
                         public void onTaskListsLoaded(List<TrelloList> trelloLists) {
                             trelloTasksLoaded(trelloLists);
                         }
-                    }).execute(selectedBoard.getId(),
+                    }, getFragmentManager()).execute(selectedBoard.getId(),
                             TrelloConstants.TRELLO_APP_KEY, SharedPrefsUtil.loadPreferenceString(TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY,
                                     getActivity()));
                 }
@@ -217,25 +221,39 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
         private SetupSpinnerAdapter boardNamesAdapter;
 
-        public LoadBoardsTask(SetupSpinnerAdapter boardNamesAdapter) {
+        private FragmentManager fragmentManager;
+
+        private RetrofitError retrofitError;
+
+        public LoadBoardsTask(SetupSpinnerAdapter boardNamesAdapter, FragmentManager fragmentManager) {
             this.boardNamesAdapter = boardNamesAdapter;
+            this.fragmentManager = fragmentManager;
         }
 
         @Override
         protected List<Board> doInBackground(String... params) {
-            TrelloApiService service = TrelloServiceFactory.createService();
-            MemberToken token = service.getMemberToken(params[1], params[0]);
+            List<Board> boards = null;
 
-            List<Board> boards = service.loadOpenBoards(token.getIdMember(), params[0], params[1]);
+            try {
+                TrelloApiService service = TrelloServiceFactory.createService();
+                MemberToken token = service.getMemberToken(params[1], params[0]);
+                boards = service.loadOpenBoards(token.getIdMember(), params[0], params[1]);
+            } catch (RetrofitError error) {
+                retrofitError = error;
+            }
 
             return boards;
         }
 
         @Override
         protected void onPostExecute(List<Board> boards) {
-            if (boards != null) {
-                TrelloResultsManager.getInstance().putTrelloBoards(boards);
-                boardNamesAdapter.addItems(boards);
+            if (retrofitError != null) {
+                NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);
+            } else {
+                if (boards != null) {
+                    TrelloResultsManager.getInstance().putTrelloBoards(boards);
+                    boardNamesAdapter.addItems(boards);
+                }
             }
         }
     }
@@ -250,27 +268,49 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
         private LoadTrelloListsCallback callback;
 
         /**
+         * The fragment manager for displaying dialogues.
+         */
+        private FragmentManager fragmentManager;
+
+        /**
+         * Store the error in case Retrofit throws something.
+         */
+        private RetrofitError retrofitError;
+
+        /**
          * The board id for which we want to load the lists.
          */
         private String boardId;
 
-        public LoadTaskListsTask(LoadTrelloListsCallback callback) {
+        public LoadTaskListsTask(LoadTrelloListsCallback callback, FragmentManager fragmentManager) {
             this.callback = callback;
+            this.fragmentManager = fragmentManager;
         }
 
         @Override
         protected List<TrelloList> doInBackground(String... params) {
             boardId = params[0];
-            TrelloApiService service = TrelloServiceFactory.createService();
+            List<TrelloList> trelloLists = null;
 
-            return service.loadTaskListsForBoard(boardId, params[1], params[2]);
+            try {
+                TrelloApiService service = TrelloServiceFactory.createService();
+                trelloLists = service.loadTaskListsForBoard(boardId, params[1], params[2]);
+            } catch (RetrofitError error) {
+                retrofitError = error;
+            }
+
+            return trelloLists;
         }
 
         @Override
         protected void onPostExecute(List<TrelloList> trelloLists) {
-            if (trelloLists != null) {
-                TrelloResultsManager.getInstance().putTrelloLists(boardId, trelloLists);
-                callback.onTaskListsLoaded(trelloLists);
+            if (retrofitError != null) {
+                NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);
+            } else {
+                if (trelloLists != null) {
+                    TrelloResultsManager.getInstance().putTrelloLists(boardId, trelloLists);
+                    callback.onTaskListsLoaded(trelloLists);
+                }
             }
         }
     }
