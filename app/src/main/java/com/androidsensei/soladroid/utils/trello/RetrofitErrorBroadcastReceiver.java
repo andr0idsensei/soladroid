@@ -33,7 +33,7 @@ public class RetrofitErrorBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() == TrelloCallsService.ACTION_RETROFIT_ERROR_BROADCAST) {
+        if (TrelloCallsService.ACTION_RETROFIT_ERROR_BROADCAST.equals(intent.getAction())) {
             RetrofitError retrofitError = (RetrofitError) intent.getSerializableExtra(TrelloCallsService.EXTRA_RETROFIT_ERROR);
             if (retrofitError != null) {
                 NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);

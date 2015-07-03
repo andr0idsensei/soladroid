@@ -24,6 +24,9 @@ import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
+ * TODO trigger a reload of online data on done and back
+ * TODO add a network available check before clicking on start, back or done
+ * TODO - nice to have - offline mode with progress sync - right now if Trello server errors occur, progress gets lost
  * <p/>
  * Created by mihai on 5/29/15.
  */
