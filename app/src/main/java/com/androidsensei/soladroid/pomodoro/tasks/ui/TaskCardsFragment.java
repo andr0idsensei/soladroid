@@ -143,11 +143,6 @@ public class TaskCardsFragment extends Fragment {
         private RetrofitError retrofitError;
 
         /**
-         * Static boolean flag to determine if the error dialog is already shown so that we don't show it again.
-         */
-        private static boolean dialogShown;
-
-        /**
          * Constructor taking the task cards adapter as argument.
          *
          * @param taskCardsAdapter the Trello task card adapter.
@@ -175,12 +170,7 @@ public class TaskCardsFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Card> cards) {
             if (retrofitError != null) {
-                if (!dialogShown) {
-                    NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);
-                    dialogShown = true;
-                } else {
-                    dialogShown = false;
-                }
+                NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);
             } else {
                 if (cards != null) {
                     taskCardsAdapter.replaceItems(cards);

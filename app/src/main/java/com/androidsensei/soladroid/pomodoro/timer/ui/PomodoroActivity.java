@@ -1,7 +1,9 @@
 package com.androidsensei.soladroid.pomodoro.timer.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
@@ -18,6 +20,7 @@ import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
+import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
@@ -70,6 +73,11 @@ public class PomodoroActivity extends ActionBarActivity {
      */
     private Button longBreak;
 
+    /**
+     * The Retrofit error receiver.
+     */
+    private BroadcastReceiver retrofitErrorReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +93,25 @@ public class PomodoroActivity extends ActionBarActivity {
         initTextViews();
         initButtons();
         restoreViewState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (retrofitErrorReceiver == null) {
+            retrofitErrorReceiver = new RetrofitErrorBroadcastReceiver(getFragmentManager());
+        }
+
+        registerReceiver(retrofitErrorReceiver, new IntentFilter(TrelloCallsService.ACTION_RETROFIT_ERROR_BROADCAST));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (retrofitErrorReceiver != null) {
+            unregisterReceiver(retrofitErrorReceiver);
+            retrofitErrorReceiver = null;
+        }
     }
 
     /**

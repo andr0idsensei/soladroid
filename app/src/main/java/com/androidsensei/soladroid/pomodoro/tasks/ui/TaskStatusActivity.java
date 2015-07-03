@@ -2,8 +2,10 @@ package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -13,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidsensei.soladroid.R;
+import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
+import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 
 /**
  * This activity allows for sliding between the to do, doing and done Trello task lists in order for the users to
@@ -39,6 +43,11 @@ public class TaskStatusActivity extends ActionBarActivity {
      */
     private ViewPager pager;
 
+    /**
+     * Broadcast receiver for Retrofit errors coming from the TrelloCallsService.
+     */
+    private BroadcastReceiver errorReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +67,20 @@ public class TaskStatusActivity extends ActionBarActivity {
                 invalidateOptionsMenu();
             }
         });
+
+        if (errorReceiver == null) {
+            errorReceiver = new RetrofitErrorBroadcastReceiver(getFragmentManager());
+        }
+        registerReceiver(errorReceiver, new IntentFilter(TrelloCallsService.ACTION_RETROFIT_ERROR_BROADCAST));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (errorReceiver != null) {
+            unregisterReceiver(errorReceiver);
+            errorReceiver = null;
+        }
     }
 
     @Override

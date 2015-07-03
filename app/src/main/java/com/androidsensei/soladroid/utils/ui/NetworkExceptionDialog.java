@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.androidsensei.soladroid.R;
 
@@ -35,6 +36,10 @@ public class NetworkExceptionDialog extends DialogFragment {
      */
     private String message;
 
+    /**
+     * The number of instances this dialog has currently shown.
+     */
+    private static int instanceCount;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -45,17 +50,20 @@ public class NetworkExceptionDialog extends DialogFragment {
                     .setMessage(message).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
+                    instanceCount--;
                 }
             });
         } else {
             builder.setTitle(R.string.network_off_title).setMessage(R.string.network_off_message)
                     .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            instanceCount--;
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
+                    instanceCount--;
                 }
             });
         }
@@ -84,6 +92,14 @@ public class NetworkExceptionDialog extends DialogFragment {
             outState.putAll(getArguments());
         }
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        instanceCount++;
+        Log.d("r1k0", "show instanceCount: " + instanceCount);
+        super.show(manager, tag);
+
     }
 
     /**
@@ -123,12 +139,12 @@ public class NetworkExceptionDialog extends DialogFragment {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment prev = fragmentManager.findFragmentByTag(NETWORK_EXCEPTION_DIALOG_TAG);
         if (prev != null) {
-            ((DialogFragment) prev).dismiss();
             transaction.remove(prev);
         }
-        transaction.addToBackStack(null);
-
-        dialog.show(fragmentManager, NETWORK_EXCEPTION_DIALOG_TAG);
+        transaction.addToBackStack(null).commit();
+        if (!(instanceCount > 0)) {
+            dialog.show(fragmentManager, NETWORK_EXCEPTION_DIALOG_TAG);
+        }
     }
 
 }
