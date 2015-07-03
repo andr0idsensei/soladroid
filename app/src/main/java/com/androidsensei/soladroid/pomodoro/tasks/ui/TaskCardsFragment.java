@@ -36,9 +36,19 @@ public class TaskCardsFragment extends Fragment {
     private static final String ARG_TRELLO_TASK_LIST_ID = "task_list_id";
 
     /**
+     * Tell the fragment if it needs to reload data from Trello.
+     */
+    private static final String ARG_REFRESH_DATA = "refresh_data";
+
+    /**
      * The Trello task list id for which we show the tasks in this fragment.
      */
     private String taskListId;
+
+    /**
+     * Boolean flag telling the fragment to refresh data from Trello.
+     */
+    private boolean refreshData;
 
     /**
      * The adapter for the recycler view containing the Trello task cards.
@@ -49,6 +59,7 @@ public class TaskCardsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taskListId = getArguments().getString(ARG_TRELLO_TASK_LIST_ID);
+        refreshData = getArguments().getBoolean(ARG_REFRESH_DATA, false);
     }
 
     @Override
@@ -90,11 +101,11 @@ public class TaskCardsFragment extends Fragment {
         trelloCards.setAdapter(taskCardsAdapter);
 
         TrelloResultsManager resultsManager = TrelloResultsManager.getInstance();
-        if (resultsManager.hasCards(taskListId)) {
-            taskCardsAdapter.replaceItems(resultsManager.getTrelloCards(taskListId));
-        } else {
+        if (refreshData || !resultsManager.hasCards(taskListId)) {
             new LoadTrelloTaskCards(taskCardsAdapter, getFragmentManager()).execute(taskListId, SharedPrefsUtil.loadPreferenceString(
                     TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+        } else {
+            taskCardsAdapter.replaceItems(resultsManager.getTrelloCards(taskListId));
         }
     }
 
@@ -104,11 +115,14 @@ public class TaskCardsFragment extends Fragment {
      * @param taskListId the Trello task list id for which we'll load the tasks in this fragment.
      * @return an instance of TaskCardsFragment
      */
-    public static TaskCardsFragment create(String taskListId) {
+    public static TaskCardsFragment create(String taskListId, boolean refreshData) {
         TaskCardsFragment fragment = new TaskCardsFragment();
         Bundle args = new Bundle();
+
         args.putString(ARG_TRELLO_TASK_LIST_ID, taskListId);
+        args.putBoolean(ARG_REFRESH_DATA, refreshData);
         fragment.setArguments(args);
+
         return fragment;
     }
 

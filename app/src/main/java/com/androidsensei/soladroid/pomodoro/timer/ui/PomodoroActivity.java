@@ -343,7 +343,6 @@ public class PomodoroActivity extends ActionBarActivity {
                 String doneList = SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this);
                 TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
                 TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), doneList);
-                TrelloResultsManager.getInstance().moveCardToList(doingList, doneList, stateManager.trelloCard());
                 startTaskStatusActivity();
             }
         });
@@ -361,7 +360,6 @@ public class PomodoroActivity extends ActionBarActivity {
                 String doingList = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, PomodoroActivity.this);
                 String todoList = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this);
                 TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), todoList);
-                TrelloResultsManager.getInstance().moveCardToList(doingList, todoList, stateManager.trelloCard());
                 startTaskStatusActivity();
             }
         });
@@ -372,6 +370,7 @@ public class PomodoroActivity extends ActionBarActivity {
      */
     private void startTaskStatusActivity() {
         Intent taskActivity = TaskStatusActivity.getActivityIntent(PomodoroActivity.this);
+        taskActivity.setAction(TaskStatusActivity.ACTION_REFRESH_DATA);
         taskActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(taskActivity);
     }

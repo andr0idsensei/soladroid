@@ -30,7 +30,7 @@ import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
  */
 public class TaskStatusActivity extends ActionBarActivity {
 
-    private static final String ACTION_REFRESH_DATA = "com.androidsensei.soladroid.pomodoro.tasks.ui.action.ACTION_REFRESH_DATA";
+    public static final String ACTION_REFRESH_DATA = "com.androidsensei.soladroid.pomodoro.tasks.ui.action.ACTION_REFRESH_DATA";
 
     /**
      * The number of pages corresponds to the number of Trello Task Lists that we want to switch between.
@@ -44,6 +44,11 @@ public class TaskStatusActivity extends ActionBarActivity {
     private ViewPager pager;
 
     /**
+     * Boolean flag telling us if we need to reload data from Trello.
+     */
+    private boolean refreshData;
+
+    /**
      * Broadcast receiver for Retrofit errors coming from the TrelloCallsService.
      */
     private BroadcastReceiver errorReceiver;
@@ -53,6 +58,9 @@ public class TaskStatusActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_status);
         pager = (ViewPager) findViewById(R.id.tasks_status_view_pager);
+        if (ACTION_REFRESH_DATA.equals(getIntent().getAction())) {
+            refreshData = true;
+        }
     }
 
     @Override
@@ -144,13 +152,16 @@ public class TaskStatusActivity extends ActionBarActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY,
+                            TaskStatusActivity.this), refreshData);
 
                 case 1:
-                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY,
+                            TaskStatusActivity.this), refreshData);
 
                 case 2:
-                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, TaskStatusActivity.this));
+                    return TaskCardsFragment.create(SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY,
+                            TaskStatusActivity.this), refreshData);
 
                 default:
                     return null;

@@ -5,9 +5,9 @@
     <string name="settings">Settings</string>
     <string name="cancel">Cancel</string>
     <string name="retrofit_error_title">Network Request Error</string>
-    <string name="retrofit_error_message">We cannot load your Trello data at this time. Please try again later.</string>
+    <string name="retrofit_error_message">We cannot load your Trello data at this time. Please try again later. Your progress could not be saved.</string>
     <string name="network_off_title">WiFi OFF</string>
-    <string name="network_off_message">Your WiFi or Data seems to be disabled. Please go to settings and enable it.</string>
+    <string name="network_off_message">Your WiFi or Data seems to be disabled. We do not support offline mode in this version. Please enable your Internet access, otherwise you may experience data loss.</string>
 
     <!-- strings for the Trello setup functionality -->
     <string name="trello_access_denied">You have chosen not to allow SolaDroid to access your Trello account.\nIf you changed your mind, please press the "OK" button, otherwise the Android back button will exist the application.</string>
