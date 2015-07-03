@@ -19,13 +19,12 @@ import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.trello.api.service.TrelloCallsService;
 import com.androidsensei.soladroid.utils.AppConstants;
+import com.androidsensei.soladroid.utils.NetworkUtil;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 
 /**
  * This fragment displays the Pomodoro timer and the current task we're working on.
- * TODO trigger a reload of online data on done and back
- * TODO add a network available check before clicking on start, back or done
  * TODO - nice to have - offline mode with progress sync - right now if Trello server errors occur, progress gets lost
  * <p/>
  * Created by mihai on 5/29/15.
@@ -276,11 +275,15 @@ public class PomodoroActivity extends ActionBarActivity {
      * Sets the current task in progress, once we start the pomodoro counter.
      */
     private void setCardInProgress() {
-        if (!stateManager.isTaskInProgress()) {
-            String todoListId = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, this);
-            String doingListId = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, this);
-            TrelloCallsService.moveCardToList(this, stateManager.trelloCard().getId(), doingListId);
-            TrelloResultsManager.getInstance().moveCardToList(todoListId, doingListId, stateManager.trelloCard());
+        if (NetworkUtil.isNetworkAvailable(this)) {
+            if (!stateManager.isTaskInProgress()) {
+                String todoListId = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, this);
+                String doingListId = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, this);
+                TrelloCallsService.moveCardToList(this, stateManager.trelloCard().getId(), doingListId);
+                TrelloResultsManager.getInstance().moveCardToList(todoListId, doingListId, stateManager.trelloCard());
+            }
+        } else {
+            NetworkUtil.showNetworkExceptionDialog(getFragmentManager());
         }
     }
 
@@ -339,11 +342,14 @@ public class PomodoroActivity extends ActionBarActivity {
                 pomodoroTimer.stop();
                 String timeComment = "Pomodoros: " + stateManager.pomodoroCount() + " - " + DateUtils.formatElapsedTime(
                         stateManager.totalTime());
-                String doingList = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, PomodoroActivity.this);
-                String doneList = SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this);
-                TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
-                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), doneList);
-                startTaskStatusActivity();
+                if (NetworkUtil.isNetworkAvailable(PomodoroActivity.this)) {
+                    String doneList = SharedPrefsUtil.loadPreferenceString(AppConstants.DONE_LIST_KEY, PomodoroActivity.this);
+                    TrelloCallsService.saveTimeComment(PomodoroActivity.this, timeComment, stateManager.trelloCard().getId());
+                    TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), doneList);
+                    startTaskStatusActivity();
+                } else {
+                    NetworkUtil.showNetworkExceptionDialog(getFragmentManager());
+                }
             }
         });
     }
@@ -357,10 +363,13 @@ public class PomodoroActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 pomodoroTimer.stop();
-                String doingList = SharedPrefsUtil.loadPreferenceString(AppConstants.DOING_LIST_KEY, PomodoroActivity.this);
-                String todoList = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this);
-                TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), todoList);
-                startTaskStatusActivity();
+                if (NetworkUtil.isNetworkAvailable(PomodoroActivity.this)) {
+                    String todoList = SharedPrefsUtil.loadPreferenceString(AppConstants.TODO_LIST_KEY, PomodoroActivity.this);
+                    TrelloCallsService.moveCardToList(PomodoroActivity.this, stateManager.trelloCard().getId(), todoList);
+                    startTaskStatusActivity();
+                } else {
+                    NetworkUtil.showNetworkExceptionDialog(getFragmentManager());
+                }
             }
         });
     }

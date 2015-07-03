@@ -53,4 +53,14 @@ public final class NetworkUtil {
 
         NetworkExceptionDialog.showDialog(fragmentManager, dialog);
     }
+
+    /**
+     * Show the network exception dialog for dealing with disabled Internet connection.
+     *
+     * @param fragmentManager the fragment manager
+     */
+    public static void showNetworkExceptionDialog(FragmentManager fragmentManager) {
+        NetworkExceptionDialog dialog = NetworkExceptionDialog.createInstance();
+        NetworkExceptionDialog.showDialog(fragmentManager, dialog);
+    }
 }
