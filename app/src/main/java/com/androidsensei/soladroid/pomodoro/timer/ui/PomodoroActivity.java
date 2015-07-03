@@ -83,7 +83,7 @@ public class PomodoroActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_pomodoro);
+        setContentView(R.layout.activity_pomodoro);
         Card trelloCard = (Card) getIntent().getExtras().getSerializable(AppConstants.ARG_START_TASK_CARD);
 
         stateManager = PomodoroActivityStateManager.getInstance();
