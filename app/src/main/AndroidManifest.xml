@@ -23,7 +23,8 @@
 
         <activity
             android:name=".pomodoro.tasks.ui.TaskStatusActivity"
-            android:label="@string/task_status_activity_title">
+            android:label="@string/task_status_activity_title"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 

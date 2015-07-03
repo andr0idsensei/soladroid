@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,7 +28,7 @@ import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
  *
  * Created by mihai on 5/29/15.
  */
-public class TaskStatusActivity extends ActionBarActivity {
+public class TaskStatusActivity extends AppCompatActivity {
 
     public static final String ACTION_REFRESH_DATA = "com.androidsensei.soladroid.pomodoro.tasks.ui.action.ACTION_REFRESH_DATA";
 
