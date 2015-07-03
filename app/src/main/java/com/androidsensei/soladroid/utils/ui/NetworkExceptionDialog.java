@@ -123,6 +123,7 @@ public class NetworkExceptionDialog extends DialogFragment {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment prev = fragmentManager.findFragmentByTag(NETWORK_EXCEPTION_DIALOG_TAG);
         if (prev != null) {
+            ((DialogFragment) prev).dismiss();
             transaction.remove(prev);
         }
         transaction.addToBackStack(null);

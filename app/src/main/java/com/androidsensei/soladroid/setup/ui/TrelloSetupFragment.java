@@ -219,10 +219,19 @@ public class TrelloSetupFragment extends SolaDroidBaseFragment {
      * AsyncTask for loading the Trello open boards in the spinner.
      */
     private static class LoadBoardsTask extends AsyncTask<String, Void, List<Board>> {
+        /**
+         * Adapter containing the board names.
+         */
         private SetupSpinnerAdapter boardNamesAdapter;
 
+        /**
+         * The fragment manager for displaying error dialogs.
+         */
         private FragmentManager fragmentManager;
 
+        /**
+         * If Retrofit throws an error during the call, we should be able to handle it.
+         */
         private RetrofitError retrofitError;
 
         public LoadBoardsTask(SetupSpinnerAdapter boardNamesAdapter, FragmentManager fragmentManager) {
