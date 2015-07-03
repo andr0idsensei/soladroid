@@ -3,6 +3,9 @@ package com.androidsensei.soladroid.utils.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +19,11 @@ import com.androidsensei.soladroid.R;
  * Created by mihai on 7/1/15.
  */
 public class NetworkExceptionDialog extends DialogFragment {
+    /**
+     * The dialog tag.
+     */
+    private static final String NETWORK_EXCEPTION_DIALOG_TAG = "NetworkExceptionDialog";
+
     /**
      * Bundle key for referring the message string id.
      */
@@ -63,7 +71,9 @@ public class NetworkExceptionDialog extends DialogFragment {
             message = savedInstanceState.getString(MESSAGE_STRING_KEY);
         } else {
             Bundle args = getArguments();
-            message = args.getString(MESSAGE_STRING_KEY);
+            if (args != null) {
+                message = args.getString(MESSAGE_STRING_KEY);
+            }
         }
     }
 
@@ -78,7 +88,7 @@ public class NetworkExceptionDialog extends DialogFragment {
      *
      * @return an instance of the NetworkExceptionDialog
      */
-    public NetworkExceptionDialog createInstance() {
+    public static NetworkExceptionDialog createInstance() {
         NetworkExceptionDialog instance = new NetworkExceptionDialog();
 
         return instance;
@@ -90,7 +100,7 @@ public class NetworkExceptionDialog extends DialogFragment {
      * @param message the message string to be displayed in the dialog.
      * @return an instance of the NetworkExceptionDialog
      */
-    public NetworkExceptionDialog createInstance(String message) {
+    public static NetworkExceptionDialog createInstance(String message) {
         NetworkExceptionDialog instance = new NetworkExceptionDialog();
         Bundle args = new Bundle();
 
@@ -98,6 +108,23 @@ public class NetworkExceptionDialog extends DialogFragment {
         instance.setArguments(args);
 
         return instance;
+    }
+
+    /**
+     * Show the NetworkException dialog with removing it from the back stack if previously shown.
+     *
+     * @param fragmentManager the fragment manager responsible for keeping track of the fragments
+     * @param dialog          the dialog instance to be shown
+     */
+    public static void showDialog(FragmentManager fragmentManager, NetworkExceptionDialog dialog) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment prev = fragmentManager.findFragmentByTag(NETWORK_EXCEPTION_DIALOG_TAG);
+        if (prev != null) {
+            transaction.remove(prev);
+        }
+        transaction.addToBackStack(null);
+
+        dialog.show(fragmentManager, NETWORK_EXCEPTION_DIALOG_TAG);
     }
 
 }

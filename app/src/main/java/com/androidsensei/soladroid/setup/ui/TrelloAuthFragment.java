@@ -10,7 +10,9 @@ import android.webkit.WebView;
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloWebViewClient;
+import com.androidsensei.soladroid.utils.NetworkUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
+import com.androidsensei.soladroid.utils.ui.NetworkExceptionDialog;
 import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 /**
@@ -36,6 +38,11 @@ public class TrelloAuthFragment extends SolaDroidBaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         webView = (WebView) getView().findViewById(R.id.trello_auth_web_view);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         setupWebView();
     }
 
@@ -47,7 +54,12 @@ public class TrelloAuthFragment extends SolaDroidBaseFragment {
         webSettings.setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new TrelloAuthJSInterface(getActivity()), "html_viewer");
         webView.setWebViewClient(new TrelloWebViewClient(contract));
-        webView.loadUrl(TrelloConstants.TRELLO_AUTH_URL);
+        if (NetworkUtil.isNetworkAvailable(getActivity())) {
+            webView.loadUrl(TrelloConstants.TRELLO_AUTH_URL);
+        } else {
+            NetworkExceptionDialog networkExceptionDialog = NetworkExceptionDialog.createInstance();
+            NetworkExceptionDialog.showDialog(getFragmentManager(), networkExceptionDialog);
+        }
     }
 
     /**
