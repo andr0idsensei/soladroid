@@ -17,7 +17,6 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
  * the users.
  * <p/>
- * TODO polish the UI interface
  *
  * @author mihai
  */

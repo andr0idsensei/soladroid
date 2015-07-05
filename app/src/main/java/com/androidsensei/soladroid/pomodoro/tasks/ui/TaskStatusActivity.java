@@ -24,7 +24,7 @@ import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 /**
  * This activity allows for sliding between the to do, doing and done Trello task lists in order for the users to
  * check out what is the status of their tasks.
- *
+ * <p/>
  * Created by mihai on 5/29/15.
  */
 public class TaskStatusActivity extends ActionBarActivity {
@@ -76,7 +76,7 @@ public class TaskStatusActivity extends ActionBarActivity {
         });
 
         setPageTitle(pager.getCurrentItem());
-        
+
         if (errorReceiver == null) {
             errorReceiver = new RetrofitErrorBroadcastReceiver(getFragmentManager());
         }
@@ -155,14 +155,14 @@ public class TaskStatusActivity extends ActionBarActivity {
     }
 
     /**
-     *  A simple pager adapter that will load the fragment containing the Trello cards corresponding to the to do, doing
+     * A simple pager adapter that will load the fragment containing the Trello cards corresponding to the to do, doing
      * and done lists.
-     *  Based on the position in the adapter we decide which of the lists to load.
-     *  <ul>
-     *      <li>0 will be the to do task list</li>
-     *      <li>1 will be the doing task list</li>
-     *      <li>2 will be the done task list</li>
-     *  <ul/>
+     * Based on the position in the adapter we decide which of the lists to load.
+     * <ul>
+     * <li>0 will be the to do task list</li>
+     * <li>1 will be the doing task list</li>
+     * <li>2 will be the done task list</li>
+     * <ul/>
      */
     private class TaskListsPagerAdapter extends FragmentStatePagerAdapter {
         public TaskListsPagerAdapter(FragmentManager fm) {
