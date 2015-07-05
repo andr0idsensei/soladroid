@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +24,6 @@ import com.androidsensei.soladroid.utils.trello.RetrofitErrorBroadcastReceiver;
 /**
  * This activity allows for sliding between the to do, doing and done Trello task lists in order for the users to
  * check out what is the status of their tasks.
- *
- * TODO set the correct label in the action bar
  *
  * Created by mihai on 5/29/15.
  */
@@ -71,15 +70,38 @@ public class TaskStatusActivity extends ActionBarActivity {
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                //TODO add the action bar title
                 invalidateOptionsMenu();
+                setPageTitle(position);
             }
         });
 
+        setPageTitle(pager.getCurrentItem());
+        
         if (errorReceiver == null) {
             errorReceiver = new RetrofitErrorBroadcastReceiver(getFragmentManager());
         }
         registerReceiver(errorReceiver, new IntentFilter(TrelloCallsService.ACTION_RETROFIT_ERROR_BROADCAST));
+    }
+
+    /**
+     * Sets the page title based on the type of task list.
+     */
+    private void setPageTitle(int position) {
+        ActionBar actionBar = getSupportActionBar();
+
+        switch (position) {
+            case 0:
+                actionBar.setTitle(R.string.task_status_todo);
+                break;
+            case 1:
+                actionBar.setTitle(R.string.task_status_doing);
+                break;
+            case 2:
+                actionBar.setTitle(R.string.task_status_done);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -106,7 +128,6 @@ public class TaskStatusActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //todo figure out where to navigate
                 return true;
 
             case R.id.task_status_action_previous:
