@@ -1,5 +1,6 @@
 package com.androidsensei.soladroid.setup.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,16 +11,12 @@ import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.pomodoro.tasks.ui.TaskStatusActivity;
 import com.androidsensei.soladroid.utils.AppConstants;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 
 /**
  * The main activity of the SolaDroid application. It manages the fragments with the screens that will be presented to
  * the users.
  * <p/>
- * TODO polish the UI interface
- * TODO add some error handling for Trello requests
- * TODO update navigation between activities if needed - clean interfaces
  *
  * @author mihai
  */
@@ -30,6 +27,11 @@ public class TrelloSetupActivity extends ActionBarActivity implements SolaDroidF
     private static final String ACCESS_DENIED_FRAGMENT_TAG = "access_denied_fragment";
 
     private boolean configurationChanged;
+
+    /**
+     * This is the current fragment.
+     */
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +58,23 @@ public class TrelloSetupActivity extends ActionBarActivity implements SolaDroidF
     @Override
     public void showAuthFragment() {
         if (configurationChanged) {
-            TrelloAuthFragment authFragment = (TrelloAuthFragment) getFragmentManager().findFragmentByTag(AUTH_FRAGMENT_TAG);
-            replaceCurrentFragment(authFragment, AUTH_FRAGMENT_TAG);
+            currentFragment = getFragmentManager().findFragmentByTag(AUTH_FRAGMENT_TAG);
         } else {
-            replaceCurrentFragment(new TrelloAuthFragment(), AUTH_FRAGMENT_TAG);
+            currentFragment = new TrelloAuthFragment();
         }
+
+        replaceCurrentFragment(AUTH_FRAGMENT_TAG);
     }
 
     @Override
     public void showSetupFragment() {
         if (configurationChanged) {
-            TrelloSetupFragment setupFragment = (TrelloSetupFragment) getFragmentManager().findFragmentByTag(SETUP_FRAGMENT_TAG);
-            replaceCurrentFragment(setupFragment, SETUP_FRAGMENT_TAG);
+            currentFragment = getFragmentManager().findFragmentByTag(SETUP_FRAGMENT_TAG);
         } else {
-            replaceCurrentFragment(new TrelloSetupFragment(), SETUP_FRAGMENT_TAG);
+            currentFragment = new TrelloSetupFragment();
         }
+
+        replaceCurrentFragment(SETUP_FRAGMENT_TAG);
     }
 
     @Override
@@ -82,21 +86,33 @@ public class TrelloSetupActivity extends ActionBarActivity implements SolaDroidF
     @Override
     public void showAccessDeniedFragment() {
         if (configurationChanged) {
-            TrelloAccessDeniedFragment accessDeniedFragment = (TrelloAccessDeniedFragment) getFragmentManager().findFragmentByTag(ACCESS_DENIED_FRAGMENT_TAG);
-            replaceCurrentFragment(accessDeniedFragment, ACCESS_DENIED_FRAGMENT_TAG);
+            currentFragment = getFragmentManager().findFragmentByTag(ACCESS_DENIED_FRAGMENT_TAG);
         } else {
-            replaceCurrentFragment(new TrelloAccessDeniedFragment(), ACCESS_DENIED_FRAGMENT_TAG);
+            currentFragment = new TrelloAccessDeniedFragment();
         }
+
+        replaceCurrentFragment(ACCESS_DENIED_FRAGMENT_TAG);
     }
 
     /**
      * Re-usable replace fragment method.
      *
-     * @param fragment the fragment which will replace the current one.
+     * @param fragmentTag the tag by which this fragment is added.
      */
-    private void replaceCurrentFragment(SolaDroidBaseFragment fragment, String fragmentTag) {
+    private void replaceCurrentFragment(String fragmentTag) {
         if (findViewById(R.id.fragment_container) != null) {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, fragmentTag).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, currentFragment, fragmentTag).commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        boolean canGoBack = false;
+        if (currentFragment instanceof TrelloAuthFragment) {
+            canGoBack = ((TrelloAuthFragment) currentFragment).goBack();
+        }
+        if (!canGoBack) {
+            super.onBackPressed();
         }
     }
 

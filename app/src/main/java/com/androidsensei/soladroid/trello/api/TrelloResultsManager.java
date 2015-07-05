@@ -107,4 +107,22 @@ public final class TrelloResultsManager {
 
         return cardList != null && ! cardList.isEmpty();
     }
+
+    /**
+     * Moves a given Trello card from the origin Trello List to the destination Trello list.
+     *
+     * @param originListId      the origin Trello list id.
+     * @param destinationListId the destination Trello list id.
+     * @param card              the card to move
+     */
+    public void moveCardToList(String originListId, String destinationListId, Card card) {
+        List<Card> origin = trelloCards.get(originListId);
+        List<Card> destination = trelloCards.get(destinationListId);
+        if (origin != null) { // make sure data is already loaded
+            origin.remove(card);
+        }
+        if (destination != null) {
+            destination.add(card);
+        }
+    }
 }

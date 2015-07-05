@@ -10,8 +10,9 @@ import android.webkit.WebView;
 import com.androidsensei.soladroid.R;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloAuthJSInterface;
 import com.androidsensei.soladroid.setup.ui.logic.TrelloWebViewClient;
-import com.androidsensei.soladroid.utils.SolaDroidBaseFragment;
+import com.androidsensei.soladroid.utils.NetworkUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
+import com.androidsensei.soladroid.utils.ui.SolaDroidBaseFragment;
 
 /**
  * This fragment is used for setting up Trello authorization for our application. It will use a web view to load the
@@ -19,34 +20,55 @@ import com.androidsensei.soladroid.utils.trello.TrelloConstants;
  * activity to move to the next stage in the Trello setup process.
  * If access is not granted, it will notify the parent activity of that so it can take appropriate steps.
  *
- * TODO - handle going back in the web view.
- *
  * @author mihai
  */
 public class TrelloAuthFragment extends SolaDroidBaseFragment {
+    /**
+     * The web view in which we display the Trello auth page.
+     */
+    private WebView webView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_trello_auth, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setupWebView((WebView) getView().findViewById(R.id.trello_auth_web_view));
+        webView = (WebView) getView().findViewById(R.id.trello_auth_web_view);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupWebView();
     }
 
     /**
-     *  Sets up the web view which will connect to Trello in order to allow authorization for the app.
-     *
-     * @param webView the web view to be used.
+     * Sets up the web view which will connect to Trello in order to allow authorization for the app.
      */
-    private void setupWebView(WebView webView) {
+    private void setupWebView() {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new TrelloAuthJSInterface(getActivity()), "html_viewer");
         webView.setWebViewClient(new TrelloWebViewClient(contract));
-        webView.loadUrl(TrelloConstants.TRELLO_AUTH_URL);
+        if (NetworkUtil.isNetworkAvailable(getActivity())) {
+            webView.loadUrl(TrelloConstants.TRELLO_AUTH_URL);
+        } else {
+            NetworkUtil.showNetworkExceptionDialog(getFragmentManager());
+        }
+    }
+
+    /**
+     * Go back in the web view.
+     */
+    public boolean goBack() {
+        boolean canGoBack = webView.canGoBack();
+        if (canGoBack) {
+            webView.goBack();
+        }
+
+        return canGoBack;
     }
 }

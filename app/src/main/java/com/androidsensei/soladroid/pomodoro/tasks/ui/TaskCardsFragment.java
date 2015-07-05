@@ -1,6 +1,7 @@
 package com.androidsensei.soladroid.pomodoro.tasks.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,11 +16,14 @@ import com.androidsensei.soladroid.trello.api.TrelloApiService;
 import com.androidsensei.soladroid.trello.api.TrelloResultsManager;
 import com.androidsensei.soladroid.trello.api.model.Card;
 import com.androidsensei.soladroid.utils.AppConstants;
+import com.androidsensei.soladroid.utils.NetworkUtil;
 import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
 
 import java.util.List;
+
+import retrofit.RetrofitError;
 
 /**
  *  Displays the Trello task cards for each of the to do, doing and done lists.
@@ -32,9 +36,19 @@ public class TaskCardsFragment extends Fragment {
     private static final String ARG_TRELLO_TASK_LIST_ID = "task_list_id";
 
     /**
+     * Tell the fragment if it needs to reload data from Trello.
+     */
+    private static final String ARG_REFRESH_DATA = "refresh_data";
+
+    /**
      * The Trello task list id for which we show the tasks in this fragment.
      */
     private String taskListId;
+
+    /**
+     * Boolean flag telling the fragment to refresh data from Trello.
+     */
+    private boolean refreshData;
 
     /**
      * The adapter for the recycler view containing the Trello task cards.
@@ -45,6 +59,7 @@ public class TaskCardsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taskListId = getArguments().getString(ARG_TRELLO_TASK_LIST_ID);
+        refreshData = getArguments().getBoolean(ARG_REFRESH_DATA, false);
     }
 
     @Override
@@ -54,8 +69,8 @@ public class TaskCardsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         setupTrelloCardList();
     }
 
@@ -86,11 +101,11 @@ public class TaskCardsFragment extends Fragment {
         trelloCards.setAdapter(taskCardsAdapter);
 
         TrelloResultsManager resultsManager = TrelloResultsManager.getInstance();
-        if (resultsManager.hasCards(taskListId)) {
-            taskCardsAdapter.replaceItems(resultsManager.getTrelloCards(taskListId));
-        } else {
-            new LoadTrelloTaskCards(taskCardsAdapter).execute(taskListId, SharedPrefsUtil.loadPreferenceString(
+        if (refreshData || !resultsManager.hasCards(taskListId)) {
+            new LoadTrelloTaskCards(taskCardsAdapter, getFragmentManager()).execute(taskListId, SharedPrefsUtil.loadPreferenceString(
                     TrelloConstants.TRELLO_APP_AUTH_TOKEN_KEY, getActivity()));
+        } else {
+            taskCardsAdapter.replaceItems(resultsManager.getTrelloCards(taskListId));
         }
     }
 
@@ -100,11 +115,14 @@ public class TaskCardsFragment extends Fragment {
      * @param taskListId the Trello task list id for which we'll load the tasks in this fragment.
      * @return an instance of TaskCardsFragment
      */
-    public static TaskCardsFragment create(String taskListId) {
+    public static TaskCardsFragment create(String taskListId, boolean refreshData) {
         TaskCardsFragment fragment = new TaskCardsFragment();
         Bundle args = new Bundle();
+
         args.putString(ARG_TRELLO_TASK_LIST_ID, taskListId);
+        args.putBoolean(ARG_REFRESH_DATA, refreshData);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -129,27 +147,49 @@ public class TaskCardsFragment extends Fragment {
         private String listId;
 
         /**
+         * The fragment manager for displaying the error dialogs.
+         */
+        private FragmentManager fragmentManager;
+
+        /**
+         * We need to handle Retrofit errors.
+         */
+        private RetrofitError retrofitError;
+
+        /**
          * Constructor taking the task cards adapter as argument.
          *
          * @param taskCardsAdapter the Trello task card adapter.
          */
-        public LoadTrelloTaskCards(TrelloTaskCardsAdapter taskCardsAdapter) {
+        public LoadTrelloTaskCards(TrelloTaskCardsAdapter taskCardsAdapter, FragmentManager fragmentManager) {
             this.taskCardsAdapter = taskCardsAdapter;
+            this.fragmentManager = fragmentManager;
         }
 
         @Override
         protected List<Card> doInBackground(String... params) {
             listId = params[0];
-            TrelloApiService service = TrelloServiceFactory.createService();
+            List<Card> cards = null;
 
-            return service.loadTrelloCardsForList(listId, TrelloConstants.TRELLO_APP_KEY, params[1]);
+            try {
+                TrelloApiService service = TrelloServiceFactory.createService();
+                cards = service.loadTrelloCardsForList(listId, TrelloConstants.TRELLO_APP_KEY, params[1]);
+            } catch (RetrofitError error) {
+                retrofitError = error;
+            }
+
+            return cards;
         }
 
         @Override
         protected void onPostExecute(List<Card> cards) {
-            if (cards != null) {
-                taskCardsAdapter.replaceItems(cards);
-                TrelloResultsManager.getInstance().putCardList(listId, cards);
+            if (retrofitError != null) {
+                NetworkUtil.showNetworkExceptionDialog(fragmentManager, retrofitError);
+            } else {
+                if (cards != null) {
+                    taskCardsAdapter.replaceItems(cards);
+                    TrelloResultsManager.getInstance().putCardList(listId, cards);
+                }
             }
         }
     }

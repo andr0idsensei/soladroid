@@ -9,10 +9,16 @@ import com.androidsensei.soladroid.utils.SharedPrefsUtil;
 import com.androidsensei.soladroid.utils.trello.TrelloConstants;
 import com.androidsensei.soladroid.utils.trello.TrelloServiceFactory;
 
+import retrofit.RetrofitError;
+
 /**
  * Intent service for handling Trello API calls in the background.
  */
 public class TrelloCallsService extends IntentService {
+    /**
+     * Intent action name for when network or server errors occur during the Trello calls.
+     */
+    public static final String ACTION_RETROFIT_ERROR_BROADCAST = "com.androidsensei.soladroid.trello.api.service.action.ACTION_RETROFIT_ERROR_BROADCAST";
     /**
      * Intent action name for saving the time comment.
      */
@@ -22,6 +28,11 @@ public class TrelloCallsService extends IntentService {
      * Intent action name for moving the card from one board to another.
      */
     private static final String ACTION_MOVE_CARD = "com.androidsensei.soladroid.trello.api.service.action.ACTION_MOVE_CARD";
+
+    /**
+     * Intent extra param name for the Retrofit error.
+     */
+    public static final String EXTRA_RETROFIT_ERROR = "com.androidsensei.soladroid.trello.api.service.action.EXTRA_RETROFIT_ERROR";
 
     /**
      * Intent extra param name for the time comment text value.
@@ -47,6 +58,7 @@ public class TrelloCallsService extends IntentService {
      * The Trello App Token.
      */
     private String trelloAppToken;
+
 
     /**
      * Starts this service to perform the save time comment action with the given parameters. If
@@ -116,7 +128,11 @@ public class TrelloCallsService extends IntentService {
      * @param cardId          the Trello card id for which the comment is saved
      */
     private void handleActionSaveTimeComment(String timeCommentText, String cardId) {
-        trelloApiService.addTimeComment(cardId, timeCommentText, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+        try {
+            trelloApiService.addTimeComment(cardId, timeCommentText, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+        } catch (RetrofitError error) {
+            sendErrorBroadcast(error);
+        }
     }
 
     /**
@@ -126,7 +142,22 @@ public class TrelloCallsService extends IntentService {
      * @param listId the list id where the card is moved
      */
     private void handleActionMoveCard(String cardId, String listId) {
-        trelloApiService.moveCardToList(cardId, listId, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+        try {
+            trelloApiService.moveCardToList(cardId, listId, TrelloConstants.TRELLO_APP_KEY, trelloAppToken);
+        } catch (RetrofitError error) {
+            sendErrorBroadcast(error);
+        }
+    }
+
+    /**
+     * Sends a broadcast with the current Retrofit error.
+     *
+     * @param error the Retrofit error
+     */
+    private void sendErrorBroadcast(RetrofitError error) {
+        Intent networkError = new Intent(ACTION_RETROFIT_ERROR_BROADCAST);
+        networkError.putExtra(EXTRA_RETROFIT_ERROR, error);
+        sendBroadcast(networkError);
     }
 
 }
