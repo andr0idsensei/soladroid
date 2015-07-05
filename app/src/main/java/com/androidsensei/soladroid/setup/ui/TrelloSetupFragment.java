@@ -33,7 +33,6 @@ import retrofit.RetrofitError;
  * The setup fragment will display the user's Trello boards and will allow her to choose which board to use, as well
  * as match lists in the board to the to do, doing, done lists in the application.
  * <p/>
- * TODO re-iterate the UI and polish it
  */
 public class TrelloSetupFragment extends SolaDroidBaseFragment {
     /**
